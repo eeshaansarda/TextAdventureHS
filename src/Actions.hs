@@ -31,7 +31,7 @@ Nothing
 
 move :: String -> Room -> Maybe String
 move dir rm = if length exit > 0 then -- exits exist
-                      -- `head exit` will be the first (and only) exist in the direction.
+                      -- `head exit` will be the first (and only) exit in the direction.
                       -- `head` is safe here since to run this code, `length exit > 0`
                      Just (room (head exit))
                  else
