@@ -30,7 +30,13 @@ Nothing
 -}
 
 move :: String -> Room -> Maybe String
-move dir rm = undefined
+move dir rm = if length exit > 0 then -- exits exist
+                      -- `head exit` will be the first (and only) exist in the direction.
+                      -- `head` is safe here since to run this code, `length exit > 0`
+                     Just (room (head exit))
+                 else
+                     Nothing
+               where exit = filter (\candidate -> exit_dir candidate == dir) (exits rm)                     
 
 {- Return True if the object appears in the room. -}
 
