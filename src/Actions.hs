@@ -143,8 +143,12 @@ put obj state = undefined
    of the object. As long as it's either in the room or the player's 
    inventory! -}
 
+-- TODO Test this after implementation of `findObj`, `objectData`
 examine :: Action
-examine obj state = undefined
+examine obj state | carrying state obj        = (state, obj_desc (findObj    obj (inventory state)))
+                  | objectHere obj this_room  = (state, obj_desc (objectData obj this_room))
+                  | otherwise                 = (state, "")
+                  where this_room = getRoomData state
 
 {- Pour the coffee. Obviously, this should only work if the player is carrying
    both the pot and the mug. This should update the status of the "mug"
