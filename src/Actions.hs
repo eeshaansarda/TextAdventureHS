@@ -47,7 +47,7 @@ objectHere o rm = elem o [y | x <- objects rm, y <- [obj_name x]]
 {- Given an object id and a room description, return a new room description
    without that object -}
 
--- removeObject :: String -> Room -> Room
+removeObject :: String -> Room -> Room
 removeObject o rm = Room (room_desc rm)
                          (exits rm)
                          (filter (\candidate -> not(obj_name candidate == o)) (objects rm))
