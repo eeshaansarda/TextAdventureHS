@@ -88,7 +88,12 @@ addInv gd obj = undefined
    the inventory. -}
 
 removeInv :: GameData -> String -> GameData
-removeInv gd obj = undefined
+removeInv gd obj = GameData (location_id gd)
+                            (world gd)
+                            (filter (\candidate -> not(obj_name candidate == obj)) (inventory gd))
+                            (poured gd)
+                            (caffeinated gd)
+                            (finished gd)
 
 {- Does the inventory in the game state contain the given object? -}
 
