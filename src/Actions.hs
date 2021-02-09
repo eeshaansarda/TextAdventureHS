@@ -93,7 +93,8 @@ removeInv gd obj = undefined
 {- Does the inventory in the game state contain the given object? -}
 
 carrying :: GameData -> String -> Bool
-carrying gd obj = undefined
+carrying gd obj = elem obj [y|x <- inventory gd, y <- [obj_name x]]
+                            -- List of names of objects in inventory
 
 {-
 Define the "go" action. Given a direction and a game state, update the game
