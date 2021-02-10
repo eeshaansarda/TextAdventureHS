@@ -74,8 +74,13 @@ objectData o rm = undefined
 {- Given a game state and a room id, replace the old room information with
    new data. If the room id does not already exist, add it. -}
 
+-- Unsure
+-- Can filter and then add
 updateRoom :: GameData -> String -> Room -> GameData
-updateRoom gd rmid rmdata = undefined
+updateRoom gd rmid rmdata = gd {
+  world =
+      (rmid, rmdata) : filter (\(x,_) -> not (x == rmid)) (world gd)
+}
 
 {- Given a game state and an object id, find the object in the current
    room and add it to the player's inventory -}
@@ -98,7 +103,7 @@ removeInv gd obj = GameData (location_id gd)
 {- Does the inventory in the game state contain the given object? -}
 
 carrying :: GameData -> String -> Bool
-carrying gd obj = elem obj [y|x <- inventory gd, y <- [obj_name x]]
+carrying gd obj = elem obj [y | x <- inventory gd, y <- [obj_name x]]
                             -- List of names of objects in inventory
 
 {-
@@ -129,7 +134,10 @@ go dir state = undefined
 -}
 
 get :: Action
-get obj state = undefined
+get obj state
+  | objectHere state obj = undefined
+  | otherwise            = undefined
+  where currLocation = location_id state
 
 {- Remove an item from the player's inventory, and put it in the current room.
    Similar to 'get' but in reverse - find the object in the inventory, create
@@ -165,8 +173,16 @@ pour obj state = undefined
    Also, put the empty coffee mug back in the inventory!
 -}
 
+-- Unsure
 drink :: Action
-drink obj state = undefined
+drink obj state
+  | isCoffee && isFull = ( (addInv (removeInv state "fullmug") "mug")
+                           { caffeinated = True },
+                           "You drank coffee and are energized")
+  | otherwise = (state, "You need a full coffee mug for that")
+        where
+          isFull = carrying state "fullmug"
+          isCoffee = obj == "coffee"
 
 {- Open the door. Only allowed if the player has had coffee! 
    This should change the description of the hall to say that the door is open,
@@ -176,8 +192,17 @@ drink obj state = undefined
    'openedhall' and 'openedexits' from World.hs for this.
 -}
 
+-- Unsure
+-- What if the door is already open?
 open :: Action
-open obj state = undefined
+open obj state
+  | caffeinated state && inHall
+        = (updateRoom state currLocation hallDesc, "Opened the door")
+  | caffeinated state = (state, "There's no door here")
+  | otherwise = (state, "You need energy")  --don't open
+        where inHall = currLocation == "hall"
+              currLocation = location_id state
+              hallDesc = Room openedhall openedexits []
 
 {- Don't update the game state, just list what the player is carrying -}
 
