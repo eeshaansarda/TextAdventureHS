@@ -150,11 +150,12 @@ get obj state
 -- need to keep in mind how many times you use this_room because it changes
 put :: Action
 put obj state
-  | carrying state obj = (updateRoom (removeInv state obj) curr_location (addObject obj this_room), response)
+  | carrying state obj = (updateRoom (removeInv state obj) curr_location (addObject item_obj this_room), response)
   | otherwise          = undefined
   where curr_location = location_id state
         this_room     = getRoomData state
         response      = obj ++ "is put outside the bag"
+        item_obj      = findObj obj (inventory state)
         -- can't say in the room (street is not a room)
 
 {- Don't update the state, just return a message giving the full description
