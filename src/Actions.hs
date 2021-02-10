@@ -135,9 +135,12 @@ go dir state = undefined
 
 get :: Action
 get obj state
-  | objectHere state obj = undefined
-  | otherwise            = undefined
-  where currLocation = location_id state
+  | objectHere obj this_room =
+    (updateRoom (addInv state obj) curr_location (removeObject obj this_room),
+     obj ++ "is put in inventory")
+  | otherwise            = (state, "No such object here")
+  where curr_location = location_id state
+        this_room = getRoomData state
 
 {- Remove an item from the player's inventory, and put it in the current room.
    Similar to 'get' but in reverse - find the object in the inventory, create
@@ -197,11 +200,11 @@ drink obj state
 open :: Action
 open obj state
   | caffeinated state && inHall
-        = (updateRoom state currLocation hallDesc, "Opened the door")
+        = (updateRoom state curr_location hallDesc, "Opened the door")
   | caffeinated state = (state, "There's no door here")
   | otherwise = (state, "You need energy")  --don't open
-        where inHall = currLocation == "hall"
-              currLocation = location_id state
+        where inHall = curr_location == "hall"
+              curr_location = location_id state
               hallDesc = Room openedhall openedexits []
 
 {- Don't update the game state, just list what the player is carrying -}
