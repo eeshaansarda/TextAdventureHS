@@ -117,8 +117,12 @@ e.g.
 
 -}
 
+--not tooo sure*********
 go :: Action
-go dir state = undefined
+go dir state = check (move dir (getRoomData state))
+                  where check Nothing  = (state,"error")
+                        check (Just a) = do
+                                             (state { location_id = a },"OK")
 
 {- Remove an item from the current room, and put it in the player's inventory.
    This should only work if the object is in the current room. Use 'objectHere'
