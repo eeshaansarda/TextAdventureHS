@@ -133,22 +133,29 @@ go dir state = undefined
       (use 'location_id' to find where the player is)
 -}
 
+-- need to keep in mind how many times you use this_room because it changes
 get :: Action
 get obj state
-  | objectHere obj this_room =
-    (updateRoom (addInv state obj) curr_location (removeObject obj this_room),
-     obj ++ "is put in inventory")
-  | otherwise            = (state, "No such object here")
+  | objectHere obj this_room = (updateRoom (addInv state obj) curr_location (removeObject obj this_room), response)
+  | otherwise                = (state, "No such object here")
   where curr_location = location_id state
-        this_room = getRoomData state
+        this_room     = getRoomData state
+        response      = obj ++ "is put in inventory"
 
 {- Remove an item from the player's inventory, and put it in the current room.
    Similar to 'get' but in reverse - find the object in the inventory, create
    a new room with the object in, update the game world with the new room.
 -}
 
+-- need to keep in mind how many times you use this_room because it changes
 put :: Action
-put obj state = undefined
+put obj state
+  | carrying state obj = (updateRoom (removeInv state obj) curr_location (addObject obj this_room), response)
+  | otherwise          = undefined
+  where curr_location = location_id state
+        this_room     = getRoomData state
+        response      = obj ++ "is put outside the bag"
+        -- can't say in the room (street is not a room)
 
 {- Don't update the state, just return a message giving the full description
    of the object. As long as it's either in the room or the player's 
@@ -182,9 +189,9 @@ drink obj state
   | isCoffee && isFull = ( (addInv (removeInv state "fullmug") "mug")
                            { caffeinated = True },
                            "You drank coffee and are energized")
-  | otherwise = (state, "You need a full coffee mug for that")
+  | otherwise          = (state, "You need a full coffee mug for that")
         where
-          isFull = carrying state "fullmug"
+          isFull   = carrying state "fullmug"
           isCoffee = obj == "coffee"
 
 {- Open the door. Only allowed if the player has had coffee! 
@@ -203,9 +210,9 @@ open obj state
         = (updateRoom state curr_location hallDesc, "Opened the door")
   | caffeinated state = (state, "There's no door here")
   | otherwise = (state, "You need energy")  --don't open
-        where inHall = curr_location == "hall"
+        where inHall        = curr_location == "hall"
               curr_location = location_id state
-              hallDesc = Room openedhall openedexits []
+              hallDesc      = Room openedhall openedexits []
 
 {- Don't update the game state, just list what the player is carrying -}
 
