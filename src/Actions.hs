@@ -57,7 +57,7 @@ removeObject o rm = Room (room_desc rm)
    with that object added -}
 
 addObject :: Object -> Room -> Room
-addObject o rm = undefined
+addObject o rm = rm{ objects = o : objects rm }
 
 {- Given an object id and a list of objects, return the object data. Note
    that you can assume the object is in the list (i.e. that you have
