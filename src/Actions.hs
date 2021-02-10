@@ -167,7 +167,6 @@ put obj state
    of the object. As long as it's either in the room or the player's 
    inventory! -}
 
--- TODO Test this after implementation of `findObj`, `objectData`
 examine :: Action
 examine obj state | carrying state obj        = (state, obj_desc (findObj    obj (inventory state)))
                   | objectHere obj this_room  = (state, obj_desc (objectData obj this_room))
