@@ -180,7 +180,9 @@ examine obj state | carrying state obj        = (state, obj_desc (findObj    obj
 -}
 
 pour :: Action
-pour obj state = undefined
+pour obj state = check obj state
+                  where check obj state| carrying state "mug" && carrying state "coffee" == False = (state,"missing items") 
+                                       |otherwise                                                 =(addInv (removeInv state "mug") obj,"OK")
 
 {- Drink the coffee. This should only work if the player has a full coffee 
    mug! Doing this is required to be allowed to open the door. Once it is
