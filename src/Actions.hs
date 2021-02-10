@@ -78,8 +78,7 @@ objectData o rm = undefined
 -- Can filter and then add
 updateRoom :: GameData -> String -> Room -> GameData
 updateRoom gd rmid rmdata = gd {
-  world =
-      (rmid, rmdata) : filter (\(x,_) -> not (x == rmid)) (world gd)
+  world = (rmid, rmdata) : filter (\(x,_) -> not (x == rmid)) (world gd)
 }
 
 {- Given a game state and an object id, find the object in the current
@@ -129,6 +128,7 @@ go dir state = undefined
 -}
 
 -- need to keep in mind how many times you use this_room because it changes
+-- Unsure
 get :: Action
 get obj state
   | objectHere obj this_room = (updateRoom (addInv state obj) curr_location (removeObject obj this_room), response)
@@ -143,6 +143,7 @@ get obj state
 -}
 
 -- need to keep in mind how many times you use this_room because it changes
+-- Unsure
 put :: Action
 put obj state
   | carrying state obj = (updateRoom (removeInv state obj) curr_location (addObject item_obj this_room), response)
