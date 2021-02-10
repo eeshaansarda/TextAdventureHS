@@ -62,7 +62,7 @@ addObject o rm = rm{ objects = o : objects rm }
 {- Given an object id and a list of objects, return the object data. Note
    that you can assume the object is in the list (i.e. that you have
    checked with 'objectHere') -}
-   
+
 findObj :: String -> [Object] -> Object
 findObj o ds = head (filter (search o) ds) -- used head as the list will never be empty
    
@@ -72,7 +72,7 @@ findObj o ds = head (filter (search o) ds) -- used head as the list will never b
 {- Use 'findObj' to find an object in a room description -}
 
 objectData :: String -> Room -> Object
-objectData o rm = undefined
+objectData o rm = findObj o (objects rm)
 
 {- Given a game state and a room id, replace the old room information with
    new data. If the room id does not already exist, add it. -}
