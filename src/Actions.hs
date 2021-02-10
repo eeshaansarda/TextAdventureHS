@@ -88,7 +88,9 @@ updateRoom gd rmid rmdata = gd {
    room and add it to the player's inventory -}
 
 addInv :: GameData -> String -> GameData
-addInv gd obj = undefined
+addInv gd obj = do
+                  let desiredObj = findObj obj (objects (getRoomData gd))
+                  gd{inventory = desiredObj : inventory gd}
 
 {- Given a game state and an object id, remove the object from the
    inventory. Hint: use filter to check if something should still be in
