@@ -62,9 +62,12 @@ addObject o rm = rm{ objects = o : objects rm }
 {- Given an object id and a list of objects, return the object data. Note
    that you can assume the object is in the list (i.e. that you have
    checked with 'objectHere') -}
-
+   
 findObj :: String -> [Object] -> Object
-findObj o ds = undefined
+findObj o ds = head (filter (search o) ds) -- used head as the list will never be empty
+   
+   where search id obj | obj_name obj == id  = True
+                       | otherwise           = False
 
 {- Use 'findObj' to find an object in a room description -}
 
