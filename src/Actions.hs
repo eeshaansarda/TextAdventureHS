@@ -144,7 +144,7 @@ get obj state
   | otherwise                = (state, "No such object here")
   where curr_location = location_id state
         this_room     = getRoomData state
-        response      = obj ++ "is put in inventory"
+        response      = obj ++ " is put in inventory"
 
 {- Remove an item from the player's inventory, and put it in the current room.
    Similar to 'get' but in reverse - find the object in the inventory, create
@@ -159,7 +159,7 @@ put obj state
   | otherwise          = undefined
   where curr_location = location_id state
         this_room     = getRoomData state
-        response      = obj ++ "is put outside the bag"
+        response      = obj ++ " is put outside the bag"
         item_obj      = findObj obj (inventory state)
         -- can't say in the room (street is not a room)
 
@@ -178,9 +178,10 @@ examine obj state | carrying state obj        = (state, obj_desc (findObj    obj
    object in the player's inventory to be a new object, a "full mug".
 -}
 
+-- TODO: Something is wrong
 pour :: Action
 pour obj state = check obj state
-                  where check obj state| carrying state "mug" && carrying state "coffee" == False = (state,"missing items") 
+                  where check obj state| carrying state "mug" && carrying state "coffee" == False = (state,"missing items")
                                        |otherwise                                                 =(addInv (removeInv state "mug") obj,"OK")
 
 {- Drink the coffee. This should only work if the player has a full coffee 
@@ -193,12 +194,12 @@ pour obj state = check obj state
 -- Unsure
 drink :: Action
 drink obj state
-  | isCoffee && isFull = ( (addInv (removeInv state "fullmug") "mug")
+  | isCoffee && isFull = ( (addInv (removeInv state "mug") "mug")
                            { caffeinated = True },
                            "You drank coffee and are energized")
   | otherwise          = (state, "You need a full coffee mug for that")
         where
-          isFull   = carrying state "fullmug"
+          isFull   = carrying state "mug"
           isCoffee = obj == "coffee"
 
 {- Open the door. Only allowed if the player has had coffee! 
