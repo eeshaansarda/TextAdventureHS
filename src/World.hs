@@ -23,8 +23,10 @@ data GameData = GameData { location_id :: String, -- where player is
                            inventory :: [Object], -- objects player has
                            poured :: Bool, -- coffee is poured
                            caffeinated :: Bool, -- coffee is drunk
-                           finished :: Bool, -- coffee is poured
+                           finished :: Bool, -- is game finished
                            masked :: Bool, -- is the mask being put on
+                           pasteApplied :: Bool,-- paste has been applied to the tooth-brush
+                           brushed :: Bool, -- is teeth brushed
                            unlocked :: Bool -- is the front door locked
                          }
 
@@ -49,23 +51,30 @@ type Action  = String -> GameData -> (GameData, String)
 -- Things which just update the game state
 type Command = GameData -> (GameData, String)
 
-mug, fullmug, coffeepot :: Object
-mug       = Obj "mug" "a coffee mug" "A coffee mug"
-fullmug   = Obj "mug" "a full coffee mug" "A coffee mug containing freshly brewed coffee"
-coffeepot = Obj "coffee" "a pot of coffee" "A pot containing freshly brewed coffee"
-key       = Obj "key" "a key" "A small, silver key"
-mask      = Obj "mask" "a mask" "A cloth face mask"
+mug, fullmug, coffeepot, tooth_brush, paste :: Object
+mug         = Obj "mug" "a coffee mug" "A coffee mug"
+fullmug     = Obj "mug" "a full coffee mug" "A coffee mug containing freshly brewed coffee"
+coffeepot   = Obj "coffee" "a pot of coffee" "A pot containing freshly brewed coffee"
+key         = Obj "key" "a key" "A small, silver key"
+mask        = Obj "mask" "a mask" "A cloth face mask"
+tooth_brush = Obj "tooth_brush" "a tooth_brush" "a blue tooth tooth_brush"
+paste       = Obj "tooth_paste" "a tooth_paste" "colgate extra fresh tooth_paste"
 
 bedroom, kitchen, hall, street :: Room
 
 bedroom = Room "You are in your bedroom."
-               [Exit "north" "To the north is a kitchen. " "kitchen"]
+               [Exit "north" "To the north is a kitchen. " "kitchen",
+                Exit "west" "To the west is a bathroom. " "bathroom"]
                [mug]
 
 kitchen = Room "You are in the kitchen."
                [Exit "south" "To the south is your bedroom. " "bedroom",
                 Exit "west" "To the west is a hallway. " "hall"]
                [coffeepot]
+
+bathroom = Room "You are in the bathroom."
+                [Exit "east" "To the east is your bedroom. " "bedroom"]
+                [tooth_brush,paste]
 
 hall = Room "You are in the hallway. The front door is closed. "
             [Exit "east" "To the east is a kitchen. " "kitchen",
@@ -100,10 +109,11 @@ gameworld = [("bedroom", bedroom),
              ("hall", hall),
              ("street", street),
              ("lounge", lounge),
-             ("porch", porch)]
+             ("porch", porch),
+             ("bathroom",bathroom)]
 
 initState :: GameData
-initState = GameData "bedroom" gameworld [mask] False False False False False
+initState = GameData "bedroom" gameworld [mask] False False False False False False False 
 
 {- Return the room the player is currently in. -}
 

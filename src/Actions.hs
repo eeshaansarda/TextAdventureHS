@@ -14,6 +14,8 @@ actions "drink"   = Just drink
 actions "open"    = Just open
 actions "wear"    = Just wear
 actions "unlock"  = Just unlock
+actions "apply"   = Just apply
+actions "brush"   = Just Actions.brush
 actions _         = Nothing
 
 commands :: String -> Maybe Command
@@ -204,16 +206,17 @@ pour obj state
 -- Unsure
 drink :: Action
 drink obj state
-  | isCoffee && isFull = ( state {
-                               inventory = (mug : filter (\x -> not (x == fullmug)) (inventory state)),
-                               caffeinated = True,
-                               poured = False
-                               },
-                           "You feel energized")
-  | otherwise          = (state, "You need a full coffee mug for that")
+  | isCoffee && isFull && hasBrushed = ( state {
+                                          inventory = (mug : filter (\x -> not (x == fullmug)) (inventory state)),
+                                          caffeinated = True,
+                                          poured = False
+                                          },"You feel energized")
+  | hasBrushed == False              =(state,"Brush your teeth before you drink coffee")--does not drinnk
+  | otherwise                        = (state, "You need a full coffee mug for that")
         where
-          isFull   = poured state
-          isCoffee = obj == "coffee"
+          isFull     = poured state
+          isCoffee   = obj == "coffee"
+          hasBrushed = brushed state
 
 {- Open the door. Only allowed if the player has had coffee! 
    This should change the description of the hall to say that the door is open,
@@ -251,6 +254,20 @@ unlock obj state| inHall && hasKey = (state{unlocked = True}, "unlocked the door
                            curr_location = location_id state
                            hasKey        = carrying state "key"
 
+apply :: Action
+apply obj state| obj == "paste" && gotBrush && gotPaste = (state{pasteApplied = True},"paste applied to brush")
+               |gotBrush && gotPaste = (state,"Please apply\"paste\" to the brush")
+               |otherwise = (state,"Please attain brush and paste")
+                  where gotBrush = carrying state "tooth_brush"
+                        gotPaste = carrying state "tooth_paste"
+
+brush::Action
+brush obj state|pasteApplied' && gotBrush && gotPaste = (state{brushed = True},"teeth has been brushed")
+               |gotBrush && gotPaste = (state,"Please apply\"paste\" to the brush")
+               |otherwise = (state,"Please attain tooth_brush and paste")
+                  where gotBrush = carrying state "tooth_brush"
+                        gotPaste = carrying state "tooth_paste"
+                        pasteApplied' = pasteApplied state
 wear :: Action
 wear obj state|obj == "mask" = (state{masked = True},"mask worn")
               |otherwise   = (state,"please select a mask to wear")
@@ -269,4 +286,4 @@ quit state = (state { finished = True }, "Bye bye")
 -- TODO may need to update
 -- Remove at the last
 help :: Command
-help state = (state, " Actions:\n\t go get drop pour examine drink open \n\n Commands: \n\t ? inventory quit")
+help state = (state, " Actions:\n\t go get drop pour examine drink open unloack wear apply brush \n\n Commands: \n\t ? inventory quit")
