@@ -178,11 +178,16 @@ examine obj state | carrying state obj        = (state, obj_desc (findObj    obj
    object in the player's inventory to be a new object, a "full mug".
 -}
 
--- TODO: Something is wrong
 pour :: Action
-pour obj state = check obj state
-                  where check obj state| carrying state "mug" && carrying state "coffee" == False = (state,"missing items")
-                                       |otherwise                                                 =(addInv (removeInv state "mug") obj,"OK")
+pour obj state
+  | carrying state "mug" && not (carrying state "coffee") = (state, "missing items")
+  | obj == "coffee"                                       =
+    (state {
+        inventory = (fullmug : filter (\x -> not (x == mug)) (inventory state)),
+        poured = True
+        }, "OK")
+
+  | otherwise                                             = (state, "can't pour " ++ obj)
 
 {- Drink the coffee. This should only work if the player has a full coffee 
    mug! Doing this is required to be allowed to open the door. Once it is
@@ -194,12 +199,15 @@ pour obj state = check obj state
 -- Unsure
 drink :: Action
 drink obj state
-  | isCoffee && isFull = ( (addInv (removeInv state "mug") "mug")
-                           { caffeinated = True },
-                           "You drank coffee and are energized")
+  | isCoffee && isFull = ( state {
+                               inventory = (mug : filter (\x -> not (x == fullmug)) (inventory state)),
+                               caffeinated = True,
+                               poured = False
+                               },
+                           "You feel energized")
   | otherwise          = (state, "You need a full coffee mug for that")
         where
-          isFull   = carrying state "mug"
+          isFull   = poured state
           isCoffee = obj == "coffee"
 
 {- Open the door. Only allowed if the player has had coffee! 
