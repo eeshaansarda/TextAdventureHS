@@ -231,7 +231,7 @@ open obj state
      (updateRoom state curr_location hallDesc, "Opened the door")-- unlocked front door 
   | caffeinated state && inPorch && maskWorn = 
      (updateRoom state curr_location porchDesc, "Opened the porch door")--masked porch
-  | doorUnlocked == False                          = (state,"The door must be unloacked first")--dont open
+  | doorUnlocked == False                          = (state,"The door must be unlocked first")--dont open
   | caffeinated state                              = (state, "There's no door here")
   | caffeinated state == False                     =(state,"You need energy") --don't open
   | otherwise                                      = (state,"please wear a mask" )  --getting out of porch without mask ,don't open
