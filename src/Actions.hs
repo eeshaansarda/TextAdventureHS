@@ -12,6 +12,7 @@ actions "pour"    = Just pour
 actions "examine" = Just examine
 actions "drink"   = Just drink
 actions "open"    = Just open
+actions "wear"    = Just wear
 actions _         = Nothing
 
 commands :: String -> Maybe Command
@@ -225,16 +226,19 @@ drink obj state
 -- What if the door is already open?
 open :: Action
 open obj state
-  | caffeinated state && inHall
-        = (updateRoom state curr_location hallDesc, "Opened the door")
+  | caffeinated state && inHall = (updateRoom state curr_location hallDesc, "Opened the door")
+  | caffeinated state && inPorch && (masked state) = (updateRoom state curr_location porchDesc, "Opened the porch")--masked
   | caffeinated state = (state, "There's no door here")
-  | otherwise = (state, "You need energy")  --don't open
+  | caffeinated state == False =(state,"You need energy") --don't open
+  | otherwise = (state,"please wear a mask" )  --getting out of porch without mask ,don't open
         where inHall        = curr_location == "hall"
+              inPorch        = curr_location == "porch"
               curr_location = location_id state
               hallDesc      = Room openedhall openedexits []
+              porchDesc     = Room maskedporch maskedexits []
 
 wear :: Action
-wear obj state|obj == mask = state{masked = True}
+wear obj state|obj == "mask" = (state{masked = True},"mask worn")
               |otherwise   = (state,"please select a mask to wear")
 {- Don't update the game state, just list what the player is carrying -}
 

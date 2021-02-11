@@ -83,8 +83,8 @@ openedexits = [Exit "east" "To the east is a kitchen. " "kitchen",
                Exit "out" "You can go outside. " "porch"]
                
 porch = Room "You are standing on the porch."
-              [Exit "in" "You can go back inside.\n must wear mask to exit " "hall"]
-              [mask]
+              [Exit "in" "You can go back inside.\nmust wear mask to exit " "hall"]
+              []
 
 maskedporch = "You are standing on the porch and wearing your mask."
 maskedexits = [Exit "in" "You can go back inside. " "hall",
@@ -102,7 +102,7 @@ gameworld = [("bedroom", bedroom),
              ("porch", porch)]
 
 initState :: GameData
-initState = GameData "bedroom" gameworld [mask] False False False
+initState = GameData "bedroom" gameworld [mask] False False False False
 
 {- Return the room the player is currently in. -}
 
