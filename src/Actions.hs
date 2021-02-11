@@ -15,6 +15,7 @@ actions _         = Nothing
 commands :: String -> Maybe Command
 commands "quit"      = Just quit
 commands "inventory" = Just inv
+commands "?"         = Just help
 commands _           = Nothing
 
 {- Given a direction and a room to move from, return the room id in
@@ -242,3 +243,7 @@ inv state = (state, showInv (inventory state))
 quit :: Command
 quit state = (state { finished = True }, "Bye bye")
 
+-- TODO may need to update
+-- Remove at the last
+help :: Command
+help state = (state, " Actions:\n\t go get drop pour examine drink open \n\n Commands: \n\t ? inventory quit")
