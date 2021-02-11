@@ -13,6 +13,7 @@ actions "examine" = Just examine
 actions "drink"   = Just drink
 actions "open"    = Just open
 actions "wear"    = Just wear
+actions "unlock"  = Just unlock
 actions _         = Nothing
 
 commands :: String -> Maybe Command
@@ -226,16 +227,29 @@ drink obj state
 -- What if the door is already open?
 open :: Action
 open obj state
-  | caffeinated state && inHall = (updateRoom state curr_location hallDesc, "Opened the door")
-  | caffeinated state && inPorch && (masked state) = (updateRoom state curr_location porchDesc, "Opened the porch")--masked
-  | caffeinated state = (state, "There's no door here")
-  | caffeinated state == False =(state,"You need energy") --don't open
-  | otherwise = (state,"please wear a mask" )  --getting out of porch without mask ,don't open
+  | caffeinated state && inHall && doorUnlocked    = 
+     (updateRoom state curr_location hallDesc, "Opened the door")-- unlocked front door 
+  | caffeinated state && inPorch && maskWorn = 
+     (updateRoom state curr_location porchDesc, "Opened the porch door")--masked porch
+  | doorUnlocked == False                          = (state,"The door must be unloacked first")--dont open
+  | caffeinated state                              = (state, "There's no door here")
+  | caffeinated state == False                     =(state,"You need energy") --don't open
+  | otherwise                                      = (state,"please wear a mask" )  --getting out of porch without mask ,don't open
         where inHall        = curr_location == "hall"
-              inPorch        = curr_location == "porch"
+              inPorch       = curr_location == "porch"
               curr_location = location_id state
               hallDesc      = Room openedhall openedexits []
               porchDesc     = Room maskedporch maskedexits []
+              doorUnlocked  = unlocked state
+              maskWorn      = masked state
+
+unlock :: Action-- no need to be caffinated to unlock door
+unlock obj state| inHall && hasKey = (state{unlocked = True}, "unlocked the door")
+                | hasKey           = (state,"no door here. the door is the hallway" )  --don't open
+                | otherwise        = (state,"please pick up the key from lounge" )  --don't open
+                     where inHall        = curr_location == "hall"
+                           curr_location = location_id state
+                           hasKey        = carrying state "key"
 
 wear :: Action
 wear obj state|obj == "mask" = (state{masked = True},"mask worn")

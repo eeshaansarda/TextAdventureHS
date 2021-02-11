@@ -24,7 +24,8 @@ data GameData = GameData { location_id :: String, -- where player is
                            poured :: Bool, -- coffee is poured
                            caffeinated :: Bool, -- coffee is drunk
                            finished :: Bool, -- coffee is poured
-                           masked :: Bool -- is the mask being put on
+                           masked :: Bool, -- is the mask being put on
+                           unlocked :: Bool -- is the front door locked
                          }
 
 won :: GameData -> Bool
@@ -83,7 +84,7 @@ openedexits = [Exit "east" "To the east is a kitchen. " "kitchen",
                Exit "out" "You can go outside. " "porch"]
                
 porch = Room "You are standing on the porch."
-              [Exit "in" "You can go back inside.\nmust wear mask to exit " "hall"]
+              [Exit "in" "You can go back inside.\nmust wear mask to .\ndoor Closed " "hall"]
               []
 
 maskedporch = "You are standing on the porch and wearing your mask."
@@ -102,7 +103,7 @@ gameworld = [("bedroom", bedroom),
              ("porch", porch)]
 
 initState :: GameData
-initState = GameData "bedroom" gameworld [mask] False False False False
+initState = GameData "bedroom" gameworld [mask] False False False False False
 
 {- Return the room the player is currently in. -}
 
