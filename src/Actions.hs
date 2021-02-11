@@ -2,6 +2,8 @@ module Actions where
 
 import World
 
+--data actions' = Go Direction | Get Object | Drop Object |Pour Object|Examine Object|Drink Object|Open Object
+
 actions :: String -> Maybe Action
 actions "go"      = Just go
 actions "get"     = Just get
@@ -231,6 +233,9 @@ open obj state
               curr_location = location_id state
               hallDesc      = Room openedhall openedexits []
 
+wear :: Action
+wear obj state|obj == mask = state{masked = True}
+              |otherwise   = (state,"please select a mask to wear")
 {- Don't update the game state, just list what the player is carrying -}
 
 inv :: Command
