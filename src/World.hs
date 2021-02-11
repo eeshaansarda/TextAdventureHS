@@ -51,6 +51,8 @@ mug, fullmug, coffeepot :: Object
 mug       = Obj "mug" "a coffee mug" "A coffee mug"
 fullmug   = Obj "mug" "a full coffee mug" "A coffee mug containing freshly brewed coffee"
 coffeepot = Obj "coffee" "a pot of coffee" "A pot containing freshly brewed coffee"
+key       = Obj "key" "a key" "A small, silver key"
+mask      = Obj "mask" "a mask" "A cloth face mask"
 
 bedroom, kitchen, hall, street :: Room
 
@@ -64,26 +66,42 @@ kitchen = Room "You are in the kitchen."
                [coffeepot]
 
 hall = Room "You are in the hallway. The front door is closed. "
-            [Exit "east" "To the east is a kitchen. " "kitchen"]
+            [Exit "east" "To the east is a kitchen. " "kitchen",
+             Exit "south" "To the south is a lounge. " "lounge"]
             []
+            
+lounge = Room "You are in the lounge."
+            [Exit "north" "To the north is a hallway. " "hall"]
+            [key]
 
 -- New data about the hall for when we open the door
 
 openedhall = "You are in the hallway. The front door is open. "
 openedexits = [Exit "east" "To the east is a kitchen. " "kitchen",
-               Exit "out" "You can go outside. " "street"]
+               Exit "south" "To the south is a lounge. " "lounge",
+               Exit "out" "You can go outside. " "porch"]
+               
+porch = Room "You are standing on the porch."
+              [Exit "in" "You can go back inside. " "hall"]
+              []
+
+maskedporch = "You are standing on the porch and wearing your mask."
+maskedexits = [Exit "in" "You can go back inside. " "hall",
+               Exit "out" "You can go out into the street. " "street"]
 
 street = Room "You have made it out of the house."
-              [Exit "in" "You can go back inside if you like. " "hall"]
+              [Exit "in" "You can go back inside if you like. " "porch"]
               []
 
 gameworld = [("bedroom", bedroom),
              ("kitchen", kitchen),
              ("hall", hall),
-             ("street", street)]
+             ("street", street),
+             ("lounge", lounge),
+             ("porch", porch)]
 
 initState :: GameData
-initState = GameData "bedroom" gameworld [] False False False
+initState = GameData "bedroom" gameworld [mask] False False False
 
 {- Return the room the player is currently in. -}
 
