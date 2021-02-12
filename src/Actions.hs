@@ -187,14 +187,13 @@ examine obj state | carrying state obj        = (state, obj_desc (findObj    obj
 
 pour :: Action
 pour obj state
-  | carrying state "mug" && not (carrying state "coffee") = (state, "missing items")
-  | obj == "coffee"                                       =
+  | obj == "coffee" && carrying state "mug" && carrying state "coffee" =
     (state {
         inventory = (fullmug : filter (\x -> not (x == mug)) (inventory state)),
         poured = True
-        }, "OK")
-
-  | otherwise                                             = (state, "can't pour " ++ obj)
+        }, "Coffee Poured")
+  | obj == "coffee"                                                    =(state, "Get mug and coffee")
+  | otherwise                                                          = (state, "can't pour " ++ obj)
 
 {- Drink the coffee. This should only work if the player has a full coffee 
    mug! Doing this is required to be allowed to open the door. Once it is
@@ -254,8 +253,8 @@ unlock obj state | not hasKey                        = (state, "Have you lost yo
                             hasKey        = carrying state "key"
 
 apply :: Action
-apply obj state | obj == "paste" && gotBrush && gotPaste = (state{pasteApplied = True}, "Paste applied to brush")
-                | gotBrush && gotPaste = (state, "Please apply \"paste\" to the brush")
+apply obj state | obj == "toothpaste" && gotBrush && gotPaste = (state{pasteApplied = True}, "Paste applied to brush")
+                | gotBrush && gotPaste = (state, "Please apply \"toothpaste\" to the brush")
                 | otherwise = (state, "Please attain brush and paste")
                   where gotBrush = carrying state "toothbrush"
                         gotPaste = carrying state "toothpaste"
