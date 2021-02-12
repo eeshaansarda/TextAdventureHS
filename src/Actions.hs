@@ -226,7 +226,6 @@ drink obj state
    'openedhall' and 'openedexits' from World.hs for this.
 -}
 
--- Unsure
 -- What if the door is already open?
 open :: Action
 open obj state
