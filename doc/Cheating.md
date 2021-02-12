@@ -24,3 +24,5 @@ Don't worry. Here's how to do it.
 17. unlock door
 18. open door
 19. wear mask
+20. open door
+21. go out
