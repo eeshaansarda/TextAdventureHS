@@ -127,7 +127,7 @@ e.g.
 --not tooo sure*********
 go :: Action
 go dir state = check (move dir (getRoomData state))
-                  where check Nothing  = (state,"error")
+                  where check Nothing  = (state, "Unknown location")
                         check (Just a) = do
                                              (state { location_id = a },"OK")
 
@@ -163,7 +163,7 @@ get obj state
 put :: Action
 put obj state
   | carrying state obj = (updateRoom (removeInv state obj) curr_location (addObject item_obj this_room), response)
-  | otherwise          = undefined
+  | otherwise          = (state, "No such item")
   where curr_location = location_id state
         this_room     = getRoomData state
         response      = obj ++ " is put outside the bag"
@@ -211,7 +211,7 @@ drink obj state
                                           caffeinated = True,
                                           poured = False
                                           },"You feel energized")
-  | hasBrushed == False              =(state,"Brush your teeth before you drink coffee")--does not drinnk
+  | hasBrushed == False              = (state, "Brush your teeth before you drink coffee")--does not drinnk
   | otherwise                        = (state, "You need a full coffee mug for that")
         where
           isFull     = poured state
@@ -247,30 +247,30 @@ open obj state
               maskWorn      = masked state
 
 unlock :: Action-- no need to be caffinated to unlock door
-unlock obj state| inHall && hasKey = (state{unlocked = True}, "unlocked the door")
-                | hasKey           = (state,"no door here. the door is the hallway" )  --don't open
-                | otherwise        = (state,"please pick up the key from lounge" )  --don't open
+unlock obj state| inHall && hasKey && obj == "door" = (state{unlocked = True}, "Unlocked the door")
+                | hasKey                            = (state, "No door here. The door is the hallway." )  --don't open
+                | otherwise                         = (state, "Please pick up the key from lounge" )  --don't open
                      where inHall        = curr_location == "hall"
                            curr_location = location_id state
                            hasKey        = carrying state "key"
 
 apply :: Action
-apply obj state| obj == "paste" && gotBrush && gotPaste = (state{pasteApplied = True},"paste applied to brush")
-               |gotBrush && gotPaste = (state,"Please apply\"paste\" to the brush")
-               |otherwise = (state,"Please attain brush and paste")
+apply obj state | obj == "paste" && gotBrush && gotPaste = (state{pasteApplied = True}, "Paste applied to brush")
+                | gotBrush && gotPaste = (state,"Please apply\"paste\" to the brush")
+                | otherwise = (state,"Please attain brush and paste")
                   where gotBrush = carrying state "tooth_brush"
                         gotPaste = carrying state "tooth_paste"
 
-brush::Action
-brush obj state|pasteApplied' && gotBrush && gotPaste = (state{brushed = True},"teeth has been brushed")
-               |gotBrush && gotPaste = (state,"Please apply\"paste\" to the brush")
-               |otherwise = (state,"Please attain tooth_brush and paste")
+brush :: Action
+brush obj state | pasteApplied' && gotBrush && gotPaste && obj == "teeth" = (state{brushed = True, pasteApplied = False}, "Your teeth are shining")
+                | gotBrush && gotPaste = (state, "Please apply \"paste\" to the brush")
+                | otherwise = (state, "Please attain tooth_brush and paste")
                   where gotBrush = carrying state "tooth_brush"
                         gotPaste = carrying state "tooth_paste"
                         pasteApplied' = pasteApplied state
 wear :: Action
-wear obj state|obj == "mask" = (state{masked = True},"mask worn")
-              |otherwise   = (state,"please select a mask to wear")
+wear obj state | obj == "mask" = (state{masked = True}, "Mask worn")
+               | otherwise   = (state, "Please select a mask to wear")
 {- Don't update the game state, just list what the player is carrying -}
 
 inv :: Command
@@ -286,4 +286,4 @@ quit state = (state { finished = True }, "Bye bye")
 -- TODO may need to update
 -- Remove at the last
 help :: Command
-help state = (state, " Actions:\n\t go get drop pour examine drink open unloack wear apply brush \n\n Commands: \n\t ? inventory quit")
+help state = (state, " Actions:\n\t go get drop pour examine drink open unlock wear apply brush \n\n Commands: \n\t ? inventory quit")
