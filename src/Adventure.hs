@@ -6,6 +6,7 @@ import Actions
 import Control.Monad
 import System.IO
 import System.Exit
+import Data.Char
 
 winmessage = "Congratulations, you have made it outside.\n"
 
@@ -21,14 +22,27 @@ process state [cmd]     = case commands cmd of
                             Nothing -> (state, "I don't understand")
 process state _ = (state, "I don't understand")
 
+fuzz :: Char -> Char
+fuzz x | not (isAlphaNum x) = x
+       | even (ord x)       = '▒'
+       | otherwise          = x
+
+putStrFuzzy :: GameData -> String -> IO ()
+putStrFuzzy state string | blind state = putStr (map (fuzz) string)
+                         | otherwise   = putStr string
+                         
+putStrLnFuzzy :: GameData -> String -> IO ()
+putStrLnFuzzy state string = putStrFuzzy state (string ++ "\n")
+
+
 repl :: GameData -> IO GameData
 repl state | finished state = return state
-repl state = do print state
-                putStr "What now? "
+repl state = do putStrFuzzy state (show state)
+                putStr "\nWhat now? "
                 hFlush stdout
                 cmd <- getLine
                 let (state', msg) = process state (words cmd)
-                putStrLn ("\n\n" ++ msg ++ "\n")
+                putStrLnFuzzy state ("\n\n" ++ msg ++ "\n")
                 if (won state') then do putStrLn winmessage
                                         return state'
                                else repl state'

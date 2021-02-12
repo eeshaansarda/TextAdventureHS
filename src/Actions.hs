@@ -256,21 +256,22 @@ unlock obj state| inHall && hasKey && obj == "door" = (state{unlocked = True}, "
 
 apply :: Action
 apply obj state | obj == "paste" && gotBrush && gotPaste = (state{pasteApplied = True}, "Paste applied to brush")
-                | gotBrush && gotPaste = (state,"Please apply\"paste\" to the brush")
+                | gotBrush && gotPaste = (state,"Please apply \"paste\" to the brush")
                 | otherwise = (state,"Please attain brush and paste")
-                  where gotBrush = carrying state "tooth_brush"
-                        gotPaste = carrying state "tooth_paste"
+                  where gotBrush = carrying state "toothbrush"
+                        gotPaste = carrying state "toothpaste"
 
 brush :: Action
 brush obj state | pasteApplied' && gotBrush && gotPaste && obj == "teeth" = (state{brushed = True, pasteApplied = False}, "Your teeth are shining")
                 | gotBrush && gotPaste = (state, "Please apply \"paste\" to the brush")
-                | otherwise = (state, "Please attain tooth_brush and paste")
-                  where gotBrush = carrying state "tooth_brush"
-                        gotPaste = carrying state "tooth_paste"
+                | otherwise = (state, "Please attain toothbrush and paste")
+                  where gotBrush = carrying state "toothbrush"
+                        gotPaste = carrying state "toothpaste"
                         pasteApplied' = pasteApplied state
 wear :: Action
-wear obj state | obj == "mask" = (state{masked = True}, "Mask worn")
-               | otherwise   = (state, "Please select a mask to wear")
+wear obj state | not (carrying state obj) = (state, "You're not carrying that at the moment")
+               | obj == "mask"            = (state{masked = True }, "Mask worn")
+               | obj == "glasses"         = (state{blind  = False}, "Wow!")
 {- Don't update the game state, just list what the player is carrying -}
 
 inv :: Command
