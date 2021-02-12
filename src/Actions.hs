@@ -230,14 +230,14 @@ drink obj state
 -- What if the door is already open?
 open :: Action
 open obj state
-  | caffeinated state && inHall && doorUnlocked    = 
+  | not inHall && not inPorch                    = (state, "There's no door here")
+  | inHall  && doorUnlocked && caffeinated state = 
      (updateRoom state curr_location hallDesc, "Opened the door")-- unlocked front door 
-  | caffeinated state && inPorch && maskWorn = 
-     (updateRoom state curr_location porchDesc, "Opened the porch door")--masked porch
-  | doorUnlocked == False                          = (state,"The door must be unlocked first")--dont open
-  | caffeinated state                              = (state, "There's no door here")
-  | caffeinated state == False                     =(state,"You need energy") --don't open
-  | otherwise                                      = (state,"please wear a mask" )  --getting out of porch without mask ,don't open
+  | inPorch && maskWorn                          = 
+     (updateRoom state curr_location porchDesc, "Opened the porch door") --masked porch
+  | inPorch                                      = (state, "Don't forget your mask" )  --getting out of porch without mask
+  | not doorUnlocked                             = (state, "The door must be unlocked first")--dont open
+  | not (caffeinated state)                      = (state, "You need energy") --don't open
         where inHall        = curr_location == "hall"
               inPorch       = curr_location == "porch"
               curr_location = location_id state
@@ -247,17 +247,17 @@ open obj state
               maskWorn      = masked state
 
 unlock :: Action-- no need to be caffinated to unlock door
-unlock obj state| inHall && hasKey && obj == "door" = (state{unlocked = True}, "Unlocked the door")
-                | hasKey                            = (state, "No door here. The door is the hallway." )  --don't open
-                | otherwise                         = (state, "Please pick up the key from lounge" )  --don't open
-                     where inHall        = curr_location == "hall"
-                           curr_location = location_id state
-                           hasKey        = carrying state "key"
+unlock obj state | not hasKey                        = (state, "Have you lost your key again?")
+                 | inHall && hasKey && obj == "door" = (state {unlocked = True}, "Unlocked the door")
+                 | otherwise                         = (state, "You can't unlock that")
+                      where inHall        = curr_location == "hall"
+                            curr_location = location_id state
+                            hasKey        = carrying state "key"
 
 apply :: Action
 apply obj state | obj == "paste" && gotBrush && gotPaste = (state{pasteApplied = True}, "Paste applied to brush")
-                | gotBrush && gotPaste = (state,"Please apply \"paste\" to the brush")
-                | otherwise = (state,"Please attain brush and paste")
+                | gotBrush && gotPaste = (state, "Please apply \"paste\" to the brush")
+                | otherwise = (state, "Please attain brush and paste")
                   where gotBrush = carrying state "toothbrush"
                         gotPaste = carrying state "toothpaste"
 

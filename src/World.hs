@@ -93,8 +93,8 @@ openedexits = [Exit "east" "To the east is a kitchen. " "kitchen",
                Exit "south" "To the south is a lounge. " "lounge",
                Exit "out" "You can go outside. " "porch"]
                
-porch = Room "You are standing on the porch."
-              [Exit "in" "You can go back inside.\nmust wear mask to .\ndoor Closed " "hall"]
+porch = Room "You are standing on the porch. The door is closed."
+              [Exit "in" "You can go back inside." "hall"]
               []
 
 maskedporch = "You are standing on the porch and wearing your mask."
