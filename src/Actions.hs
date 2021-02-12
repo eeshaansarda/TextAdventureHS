@@ -2,6 +2,8 @@ module Actions where
 
 import World
 
+--data actions' = Go Direction | Get Object | Drop Object |Pour Object|Examine Object|Drink Object|Open Object
+
 actions :: String -> Maybe Action
 actions "go"      = Just go
 actions "get"     = Just get
@@ -10,6 +12,10 @@ actions "pour"    = Just pour
 actions "examine" = Just examine
 actions "drink"   = Just drink
 actions "open"    = Just open
+actions "wear"    = Just wear
+actions "unlock"  = Just unlock
+actions "apply"   = Just apply
+actions "brush"   = Just Actions.brush
 actions _         = Nothing
 
 commands :: String -> Maybe Command
@@ -121,7 +127,7 @@ e.g.
 --not tooo sure*********
 go :: Action
 go dir state = check (move dir (getRoomData state))
-                  where check Nothing  = (state,"error")
+                  where check Nothing  = (state, "Unknown location")
                         check (Just a) = do
                                              (state { location_id = a },"OK")
 
@@ -157,7 +163,7 @@ get obj state
 put :: Action
 put obj state
   | carrying state obj = (updateRoom (removeInv state obj) curr_location (addObject item_obj this_room), response)
-  | otherwise          = undefined
+  | otherwise          = (state, "No such item")
   where curr_location = location_id state
         this_room     = getRoomData state
         response      = obj ++ " is put outside the bag"
@@ -200,16 +206,17 @@ pour obj state
 -- Unsure
 drink :: Action
 drink obj state
-  | isCoffee && isFull = ( state {
-                               inventory = (mug : filter (\x -> not (x == fullmug)) (inventory state)),
-                               caffeinated = True,
-                               poured = False
-                               },
-                           "You feel energized")
-  | otherwise          = (state, "You need a full coffee mug for that")
+  | isCoffee && isFull && hasBrushed = ( state {
+                                          inventory = (mug : filter (\x -> not (x == fullmug)) (inventory state)),
+                                          caffeinated = True,
+                                          poured = False
+                                          },"You feel energized")
+  | hasBrushed == False              = (state, "Brush your teeth before you drink coffee")--does not drinnk
+  | otherwise                        = (state, "You need a full coffee mug for that")
         where
-          isFull   = poured state
-          isCoffee = obj == "coffee"
+          isFull     = poured state
+          isCoffee   = obj == "coffee"
+          hasBrushed = brushed state
 
 {- Open the door. Only allowed if the player has had coffee! 
    This should change the description of the hall to say that the door is open,
@@ -223,14 +230,47 @@ drink obj state
 -- What if the door is already open?
 open :: Action
 open obj state
-  | caffeinated state && inHall
-        = (updateRoom state curr_location hallDesc, "Opened the door")
-  | caffeinated state = (state, "There's no door here")
-  | otherwise = (state, "You need energy")  --don't open
+  | caffeinated state && inHall && doorUnlocked    = 
+     (updateRoom state curr_location hallDesc, "Opened the door")-- unlocked front door 
+  | caffeinated state && inPorch && maskWorn = 
+     (updateRoom state curr_location porchDesc, "Opened the porch door")--masked porch
+  | doorUnlocked == False                          = (state,"The door must be unlocked first")--dont open
+  | caffeinated state                              = (state, "There's no door here")
+  | caffeinated state == False                     =(state,"You need energy") --don't open
+  | otherwise                                      = (state,"please wear a mask" )  --getting out of porch without mask ,don't open
         where inHall        = curr_location == "hall"
+              inPorch       = curr_location == "porch"
               curr_location = location_id state
               hallDesc      = Room openedhall openedexits []
+              porchDesc     = Room maskedporch maskedexits []
+              doorUnlocked  = unlocked state
+              maskWorn      = masked state
 
+unlock :: Action-- no need to be caffinated to unlock door
+unlock obj state| inHall && hasKey && obj == "door" = (state{unlocked = True}, "Unlocked the door")
+                | hasKey                            = (state, "No door here. The door is the hallway." )  --don't open
+                | otherwise                         = (state, "Please pick up the key from lounge" )  --don't open
+                     where inHall        = curr_location == "hall"
+                           curr_location = location_id state
+                           hasKey        = carrying state "key"
+
+apply :: Action
+apply obj state | obj == "paste" && gotBrush && gotPaste = (state{pasteApplied = True}, "Paste applied to brush")
+                | gotBrush && gotPaste = (state,"Please apply\"paste\" to the brush")
+                | otherwise = (state,"Please attain brush and paste")
+                  where gotBrush = carrying state "tooth_brush"
+                        gotPaste = carrying state "tooth_paste"
+
+brush :: Action
+brush obj state | pasteApplied' && gotBrush && gotPaste && obj == "teeth" = (state{brushed = True, pasteApplied = False}, "Your teeth are shining")
+                | gotBrush && gotPaste = (state, "Please apply \"paste\" to the brush")
+                | otherwise = (state, "Please attain tooth_brush and paste")
+                  where gotBrush = carrying state "tooth_brush"
+                        gotPaste = carrying state "tooth_paste"
+                        pasteApplied' = pasteApplied state
+wear :: Action
+wear obj state | obj == "mask" = (state{masked = True}, "Mask worn")
+               | otherwise   = (state, "Please select a mask to wear")
 {- Don't update the game state, just list what the player is carrying -}
 
 inv :: Command
@@ -246,4 +286,4 @@ quit state = (state { finished = True }, "Bye bye")
 -- TODO may need to update
 -- Remove at the last
 help :: Command
-help state = (state, " Actions:\n\t go get drop pour examine drink open \n\n Commands: \n\t ? inventory quit")
+help state = (state, " Actions:\n\t go get drop pour examine drink open unlock wear apply brush \n\n Commands: \n\t ? inventory quit")
