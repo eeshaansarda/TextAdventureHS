@@ -23,6 +23,7 @@ data GameData = GameData { location_id :: String, -- where player is
                            inventory :: [Object], -- objects player has
                            poured :: Bool, -- coffee is poured
                            caffeinated :: Bool, -- coffee is drunk
+                           blind :: Bool, -- true while glasses are not on
                            finished :: Bool -- set to True at the end
                          }
 
@@ -53,12 +54,13 @@ fullmug   = Obj "mug" "a full coffee mug" "A coffee mug containing freshly brewe
 coffeepot = Obj "coffee" "a pot of coffee" "A pot containing freshly brewed coffee"
 key       = Obj "key" "a key" "A small, silver key"
 mask      = Obj "mask" "a mask" "A cloth face mask"
+glasses   = Obj "item" "a pair of glasses" "A pair of glasses, with a very heavy prescription"
 
 bedroom, kitchen, hall, street :: Room
 
 bedroom = Room "You are in your bedroom."
                [Exit "north" "To the north is a kitchen. " "kitchen"]
-               [mug]
+               [glasses, mug]
 
 kitchen = Room "You are in the kitchen."
                [Exit "south" "To the south is your bedroom. " "bedroom",
@@ -101,7 +103,7 @@ gameworld = [("bedroom", bedroom),
              ("porch", porch)]
 
 initState :: GameData
-initState = GameData "bedroom" gameworld [mask] False False False
+initState = GameData "bedroom" gameworld [mask] False False True False
 
 {- Return the room the player is currently in. -}
 
