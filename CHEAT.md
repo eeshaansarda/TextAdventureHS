@@ -3,7 +3,7 @@ Indeed, getting up and out of the house can be a challenge. We all have days lik
 
 Don't worry. Here's how to do it.
 
-![Map of the game](Map.png)
+![Map of the game](img/Map.png)
 
 1. get glasses
 2. wear glasses
