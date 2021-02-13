@@ -30,7 +30,7 @@ data GameData = GameData { location_id :: String, -- where player is
                            brushed :: Bool, -- is teeth brushed
                            unlocked :: Bool -- is the front door locked
                          }
-
+         
 won :: GameData -> Bool
 won gd = location_id gd == "street"
 
@@ -41,10 +41,11 @@ instance Show Room where
              showInv xs = "\n\nYou can see: " ++ showInv' xs
              showInv' [x] = show x
              showInv' (x:xs) = show x ++ ", " ++ showInv' xs
-                                  
+
 
 instance Show GameData where
     show gd = show (getRoomData gd)
+
 
 -- Things which do something to an object and update the game state
 type Action  = String -> GameData -> (GameData, String)

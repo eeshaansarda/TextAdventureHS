@@ -2,6 +2,7 @@ module Actions where
 
 import World
 
+
 --data actions' = Go Direction | Get Object | Drop Object |Pour Object|Examine Object|Drink Object|Open Object
 
 actions :: String -> Maybe Action
@@ -16,6 +17,8 @@ actions "wear"    = Just wear
 actions "unlock"  = Just unlock
 actions "apply"   = Just apply
 actions "brush"   = Just Actions.brush
+actions "save"     = Just save
+actions "load"     = Just load
 actions _         = Nothing
 
 commands :: String -> Maybe Command
@@ -128,10 +131,31 @@ e.g.
 go :: Action
 go dir state = check (move dir (getRoomData state))
                   where check Nothing  = (state, "Unknown location")
-                        check (Just a) = do
-                                             (state { location_id = a },"OK")
+                        check (Just a) = (state { location_id = a },"OK")
 
-{- Remove an item from the current room, and put it in the player's inventory.
+save::Action
+save path state = message (writeFile (prepareP path) (show state))
+                     where message _ =(state,"Good")
+
+
+prepareP:: String -> FilePath
+prepareP path = path
+
+
+load::Action
+load path state = message ( prepareS ( path))
+                     where message a =(a,"Good")
+
+prepareS:: FilePath -> GameData
+prepareS path = do let stateStr <- readFile path
+                   state = read stateStr
+                   return state
+
+
+{- 
+
+                  
+                  Remove an item from the current room, and put it in the player's inventory.
    This should only work if the object is in the current room. Use 'objectHere'
    and 'removeObject' to remove the object, and 'updateRoom' to replace the
    room in the game state with the new room which doesn't contain the object.
