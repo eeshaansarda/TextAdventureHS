@@ -1,10 +1,12 @@
 module Actions where
 
 import World
+import DataDecl
 
 
 --data actions' = Go Direction | Get Object | Drop Object |Pour Object|Examine Object|Drink Object|Open Object
 
+{-
 actions :: String -> Maybe Action
 actions "go"      = Just go
 actions "get"     = Just get
@@ -26,6 +28,7 @@ commands "quit"      = Just quit
 commands "inventory" = Just inv
 commands "?"         = Just help
 commands _           = Nothing
+-}
 
 {- Given a direction and a room to move from, return the room id in
    that direction, if it exists.
@@ -133,6 +136,7 @@ go dir state = check (move dir (getRoomData state))
                   where check Nothing  = (state, "Unknown location")
                         check (Just a) = (state { location_id = a },"OK")
 
+{-
 save::Action
 save path state = message (writeFile (prepareP path) (show state))
                      where message _ =(state,"Good")
@@ -150,6 +154,7 @@ prepareS:: FilePath -> GameData
 prepareS path = do let stateStr <- readFile path
                    state = read stateStr
                    return state
+--}
 
 
 {- 
