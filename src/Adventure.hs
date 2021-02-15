@@ -12,7 +12,6 @@ import Data.Char
 
 winmessage = "Congratulations, you have made it outside.\n"
 
--- TODO Report: this isn't completely random since Haskell likes pure functions and randomness breaks purity
 {-| For a given character, return either the character or a fuzzy nonsense character.
     A given character will always return the same result. Punctuation will never be fuzzy. -}
 fuzz :: Char -> Char
