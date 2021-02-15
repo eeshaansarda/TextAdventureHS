@@ -1,5 +1,5 @@
 module Actions where
-import System.IO
+
 import World
 
 
@@ -134,25 +134,23 @@ go dir state = check (move dir (getRoomData state))
                         check (Just a) = (state { location_id = a },"OK")
 
 save::Action
-save path state = if (save' path state) == IO() then (state,"ok") else (state,"notok")
+save path state = message (writeFile (prepareP path) (show state))
+                     where message _ =(state,"Good")
 
-save'::String-> GameData ->IO()
-save' path _ = writeFile path "(show state)"
+
+prepareP:: String -> FilePath
+prepareP path = path
 
 
 load::Action
-load path state = undefined
-
-{-
-load::Action
-load path state = message ( readFile path)
+load path state = message ( prepareS ( path))
                      where message a =(a,"Good")
 
 prepareS:: FilePath -> GameData
 prepareS path = do let stateStr <- readFile path
                    state = read stateStr
                    return state
--}
+
 
 {- 
 
