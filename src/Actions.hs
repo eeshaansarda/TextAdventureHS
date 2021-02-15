@@ -105,7 +105,6 @@ updateRoom gd rmid rmdata = gd {
 addInv :: GameData -> Object -> GameData
 addInv gd obj = gd{inventory = obj : inventory gd}
                   --let desiredObj = findObj obj (objects (getRoomData gd))
-                  --TODO: need to check if object is in the room
 
 {- Given a game state and an object id, remove the object from the
    inventory. Hint: use filter to check if something should still be in
