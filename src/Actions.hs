@@ -294,7 +294,7 @@ remove obj state | obj == mask && masked state         = (newState {masked = Fal
                    where newState = addInv state obj -- place item into inventory
 
 {-| Don't update the game state, just list what the player is carrying -}
-inv :: Command
+inv      :: Command
 inv state = (state, showInv (inventory state))
    where showInv [] = "You aren't carrying anything"
          showInv xs = "You are carrying:\n" ++ showInv' xs
@@ -302,10 +302,10 @@ inv state = (state, showInv (inventory state))
          showInv' (x:xs) = obj_longname x ++ "\n" ++ showInv' xs
 
 {-| End the game. -}
-quit :: Command
+quit      :: Command
 quit state = (state { finished = True }, "Bye bye")
 
 -- TODO may need to update
 {-| List all possible actions and commands in the game -}
-help :: Command
+help      :: Command
 help state = (state, " Actions:\n\t go get drop pour examine drink open unlock wear remove apply brush \n\n Commands: \n\t ? inventory quit")
