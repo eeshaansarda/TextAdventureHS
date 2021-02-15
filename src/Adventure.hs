@@ -41,28 +41,15 @@ putStrLnFuzzy state string = putStrFuzzy state (string ++ "\n")
 
 repl :: GameData -> IO GameData
 repl state | finished state = return state
-repl state = do print state
-                putStr "\nWhat now? "
-                hFlush stdout
-                cmd <- getLine
-                --let (state', msg) = process state (words cmd)
-                let (state', msg) = process state cmd
-                putStrLn ("\n\n" ++ msg ++ "\n")
-                if (won state') then do putStrLn winmessage
-                                        return state'
-                               else repl state'
-{-
 repl state = do putStrFuzzy state (show state)
                 putStr "\nWhat now? "
                 hFlush stdout
                 cmd <- getLine
-                --let (state', msg) = process state (words cmd)
                 let (state', msg) = process state cmd
                 putStrLnFuzzy state ("\n\n" ++ msg ++ "\n")
                 if (won state') then do putStrLn winmessage
                                         return state'
                                else repl state'
--}
 
 main :: IO ()
 main = do repl initState

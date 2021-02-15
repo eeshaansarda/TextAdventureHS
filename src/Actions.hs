@@ -240,20 +240,20 @@ pour obj state
 -- Unsure
 drink :: ActionObj
 drink obj state
-  | isCoffee && isFull && hasBrushed && not masked
+  | isCoffee && isFull && hasBrushed && not wearingmask
         = ( state {
                 inventory = (mug : filter (\x -> not (x == fullmug)) (inventory state)),
                 caffeinated = True,
                 poured = False
                 }, "You feel energized")
   | hasBrushed == False = (state, "Brush your teeth before you drink coffee")--does not drinnk
-  | masked              = (state, "Remove your mask to drink")
+  | wearingmask              = (state, "Remove your mask to drink")
   | otherwise           = (state, "You need a full coffee mug for that")
         where
-          isFull     = poured state
-          masked     = masked state
-          isCoffee   = obj == coffeepot
-          hasBrushed = brushed state
+          isFull      = poured state
+          wearingmask = masked state
+          isCoffee    = obj == coffeepot
+          hasBrushed  = brushed state
 
 {- Open the door. Only allowed if the player has had coffee! 
    This should change the description of the hall to say that the door is open,
