@@ -3,7 +3,7 @@ module DataDecl where
 -- Data Declaration -------------------------------------------
 
 data Command' = Quit | Inventory | Help
-   deriving Eq
+   deriving Show
 --x---------------------x------------------x--
 data Direction' = North | East | South | West | Inside | Outside
    deriving Eq
@@ -11,7 +11,7 @@ data Direction' = North | East | South | West | Inside | Outside
 data Action' = Go Direction' | Get Object | Put Object | Pour Object
              | Examine Object | Drink Object | Open String| Wear Object
              | Unlock String | Apply Object | Brush String
-   deriving Eq
+   deriving Show
 --x---------------------x------------------x--
 
 data Object = Obj { obj_name :: String,
@@ -60,6 +60,15 @@ instance Show Room where
 
 instance Show GameData where
     show gd = show (getRoomData gd)
+
+instance Show Direction' where
+   show dir = case dir of
+                North -> "north"
+                South -> "south"
+                East -> "east"
+                West -> "west"
+                Outside -> "out"
+                Inside -> "in"
 
 {- Return the room the player is currently in. -}
 

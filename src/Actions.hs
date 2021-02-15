@@ -240,15 +240,18 @@ pour obj state
 -- Unsure
 drink :: ActionObj
 drink obj state
-  | isCoffee && isFull && hasBrushed = ( state {
-                                          inventory = (mug : filter (\x -> not (x == fullmug)) (inventory state)),
-                                          caffeinated = True,
-                                          poured = False
-                                          }, "You feel energized")
-  | hasBrushed == False              = (state, "Brush your teeth before you drink coffee")--does not drinnk
-  | otherwise                        = (state, "You need a full coffee mug for that")
+  | isCoffee && isFull && hasBrushed && not masked
+        = ( state {
+                inventory = (mug : filter (\x -> not (x == fullmug)) (inventory state)),
+                caffeinated = True,
+                poured = False
+                }, "You feel energized")
+  | hasBrushed == False = (state, "Brush your teeth before you drink coffee")--does not drinnk
+  | masked              = (state, "Remove your mask to drink")
+  | otherwise           = (state, "You need a full coffee mug for that")
         where
           isFull     = poured state
+          masked     = masked state
           isCoffee   = obj == coffeepot
           hasBrushed = brushed state
 
@@ -295,7 +298,7 @@ apply obj state | obj == paste && gotBrush && gotPaste = (state{pasteApplied = T
                         gotPaste = carrying state paste
 
 brush :: Action
-brush str state | pasteApplied' && gotBrush && gotPaste && str == "teeth" = (state{brushed = True, pasteApplied = False}, "Your teeth are shining")
+brush str state | pasteApplied' && gotBrush && str == "teeth" = (state{brushed = True, pasteApplied = False}, "Your teeth are shining")
                 | gotBrush && gotPaste = (state, "Please apply \"paste\" to the brush")
                 | otherwise = (state, "Please attain toothbrush and paste")
                   where gotBrush = carrying state toothbrush

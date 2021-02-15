@@ -26,7 +26,7 @@ command = do com <- identifier
 
 -- ? does not get parsed by identifier
 getCommand :: String -> Maybe Command'
-getCommand "?"         = Just Help
+getCommand "help"         = Just Help
 getCommand "inventory" = Just Inventory
 getCommand "quit"      = Just Quit
 getCommand _           = Nothing
