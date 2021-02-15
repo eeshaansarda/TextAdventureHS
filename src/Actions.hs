@@ -4,8 +4,6 @@ import World
 import DataDecl
 
 
---data actions' = Go Direction | Get Object | Drop Object |Pour Object|Examine Object|Drink Object|Open Object
-
 {-
 actions :: String -> Maybe Action
 actions "go"      = Just go

@@ -8,14 +8,14 @@ import DataDecl
 ---------------
 
 --- Parser
-
 userInput :: GameData -> String -> (GameData, String)
 userInput state input
-  | not (commandStr == "") = commands commandStr state
-  | not (actionStr == "")  = actions  actionStr  state
-  | otherwise        = (state, "Invalid input")
-        where commandStr = fst (head (parse command input))
-              actionStr  = fst (head (parse action input))
+  | not (length commandlist == 0) = commands fst (head (commandlist)) state
+  | not (length actionlist == 0)  = actions  fst (head (actionlist))  state
+  | otherwise                     = (state, "Invalid input")
+        where commandlist = parse command input
+              actionlist  = parse action input
+--TODO: maybe use safehead here
 
 -- Command -
 command :: Parser Command'
@@ -25,6 +25,7 @@ command = do com <- identifier
                Just x -> return (x)
                Nothing -> failure
 
+-- ? does not get parsed by identifier
 getCommand :: String -> Maybe Command'
 getCommand "?"         = Just Help
 getCommand "inventory" = Just Inventory
@@ -111,7 +112,6 @@ getObject "toothbrush" = Just toothbrush
 getObject "paste" = Just paste
 getObject _ = Nothing
 -----------
-
 
 
 actions :: Action' -> GameData -> (GameData, String)
