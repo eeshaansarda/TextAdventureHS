@@ -8,14 +8,13 @@ import DataDecl
 ---------------
 
 --- Parser
-userInput :: GameData -> String -> (GameData, String)
-userInput state input
-  | not (length commandlist == 0) = commands fst (head (commandlist)) state
-  | not (length actionlist == 0)  = actions  fst (head (actionlist))  state
-  | otherwise                     = (state, "Invalid input")
+process :: GameData -> String -> (GameData, String)
+process state input
+  | not (length commandlist == 0) = commands (fst (head commandlist)) state
+  | not (length actionlist == 0)  = actions  (fst (head actionlist))  state
+  | otherwise                     = (state, "I don't understand")
         where commandlist = parse command input
               actionlist  = parse action input
---TODO: maybe use safehead here
 
 -- Command -
 command :: Parser Command'
@@ -63,16 +62,16 @@ getActionObj :: String -> Object -> Maybe Action'
 getActionObj "get"     obj = Just (Get obj)
 getActionObj "drop"    obj = Just (Put obj)
 getActionObj "examine" obj = Just (Examine obj)
-getActionObj "open"    obj = Just (Open obj)
 getActionObj "wear"    obj = Just (Wear obj)
-getActionObj "unlock"  obj = Just (Unlock obj)
 getActionObj "apply"   obj = Just (Apply obj)
+getActionObj "drink"   obj = Just (Drink obj)
+getActionObj "pour"    obj = Just (Pour  obj)
 getActionObj  _        _   = Nothing
 
 getActionStr :: String -> String -> Maybe Action'
-getActionStr "pour"    str = Just (Pour  str)
 getActionStr "brush"   str = Just (Brush str)
-getActionStr "drink"   str = Just (Drink str)
+getActionStr "open"    str = Just (Open str)
+getActionStr "unlock"  str = Just (Unlock str)
 getActionStr  _        _   = Nothing
 -----------
 

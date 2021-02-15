@@ -40,28 +40,28 @@ Just "kitchen"
 Nothing
 -}
 
-move :: String -> Room -> Maybe String
+move :: Direction' -> Room -> Maybe String
 move dir rm = if length exit > 0 then -- exits exist
                       -- `head exit` will be the first (and only) exit in the direction.
                       -- `head` is safe here since to run this code, `length exit > 0`
                      Just (room (head exit))
                  else
                      Nothing
-               where exit = filter (\candidate -> exit_dir candidate == dir) (exits rm)                     
+               where exit = filter (\candidate -> exit_dir candidate == dir) (exits rm)
 
 {- Return True if the object appears in the room. -}
 
-objectHere :: String -> Room -> Bool
+objectHere :: Object -> Room -> Bool
 -- Return True if object `o` is a member of the list of names of objects in room `rm`
-objectHere o rm = elem o [y | x <- objects rm, y <- [obj_name x]]
+objectHere o rm = elem o [x | x <- objects rm]
 
 {- Given an object id and a room description, return a new room description
    without that object -}
 
-removeObject :: String -> Room -> Room
+removeObject :: Object -> Room -> Room
 removeObject o rm = Room (room_desc rm)
                          (exits rm)
-                         (filter (\candidate -> not(obj_name candidate == o)) (objects rm))
+                         (filter (\candidate -> not(candidate == o)) (objects rm))
                                  -- Create list of objects excluding the one to remove
 
 {- Given an object and a room description, return a new room description
@@ -74,6 +74,7 @@ addObject o rm = rm{ objects = o : objects rm }
    that you can assume the object is in the list (i.e. that you have
    checked with 'objectHere') -}
 
+-- TODO: Uses string
 findObj :: String -> [Object] -> Object
 findObj o ds = head (filter (search o) ds) -- used head as the list will never be empty
    
@@ -82,6 +83,7 @@ findObj o ds = head (filter (search o) ds) -- used head as the list will never b
 
 {- Use 'findObj' to find an object in a room description -}
 
+-- TODO: Uses string
 objectData :: String -> Room -> Object
 objectData o rm = findObj o (objects rm)
 
@@ -90,6 +92,7 @@ objectData o rm = findObj o (objects rm)
 
 -- Unsure
 -- Can filter and then add
+-- TODO: Can use string here?
 updateRoom :: GameData -> String -> Room -> GameData
 updateRoom gd rmid rmdata = gd {
   world = (rmid, rmdata) : filter (\(x,_) -> not (x == rmid)) (world gd)
@@ -98,22 +101,22 @@ updateRoom gd rmid rmdata = gd {
 {- Given a game state and an object id, find the object in the current
    room and add it to the player's inventory -}
 
-addInv :: GameData -> String -> GameData
-addInv gd obj = do
-                  let desiredObj = findObj obj (objects (getRoomData gd))
-                  gd{inventory = desiredObj : inventory gd}
+addInv :: GameData -> Object -> GameData
+addInv gd obj = gd{inventory = obj : inventory gd}
+                  --let desiredObj = findObj obj (objects (getRoomData gd))
+                  --TODO: need to check if object is in the room
 
 {- Given a game state and an object id, remove the object from the
    inventory. Hint: use filter to check if something should still be in
    the inventory. -}
 
-removeInv :: GameData -> String -> GameData
-removeInv gd obj = gd { inventory = filter (\candidate -> not(obj_name candidate == obj)) (inventory gd) }
+removeInv :: GameData -> Object -> GameData
+removeInv gd obj = gd { inventory = filter (\candidate -> not(candidate == obj)) (inventory gd) }
 
 {- Does the inventory in the game state contain the given object? -}
 
-carrying :: GameData -> String -> Bool
-carrying gd obj = elem obj [y | x <- inventory gd, y <- [obj_name x]]
+carrying :: GameData -> Object -> Bool
+carrying gd obj = elem obj [x | x <- inventory gd]
                             -- List of names of objects in inventory
 
 {-
@@ -129,7 +132,7 @@ e.g.
 -}
 
 --not tooo sure*********
-go :: Action
+go :: ActionDir
 go dir state = check (move dir (getRoomData state))
                   where check Nothing  = (state, "Unknown location")
                         check (Just a) = (state { location_id = a },"OK")
@@ -172,13 +175,13 @@ prepareS path = do let stateStr <- readFile path
 
 -- need to keep in mind how many times you use this_room because it changes
 -- Unsure
-get :: Action
+get :: ActionObj
 get obj state
   | objectHere obj this_room = (updateRoom (addInv state obj) curr_location (removeObject obj this_room), response)
   | otherwise                = (state, "No such object here")
   where curr_location = location_id state
         this_room     = getRoomData state
-        response      = obj ++ " is put in inventory"
+        response      = (obj_name obj) ++ " is put in inventory"
 
 {- Remove an item from the player's inventory, and put it in the current room.
    Similar to 'get' but in reverse - find the object in the inventory, create
@@ -187,23 +190,26 @@ get obj state
 
 -- need to keep in mind how many times you use this_room because it changes
 -- Unsure
-put :: Action
+put :: ActionObj
 put obj state
-  | carrying state obj = (updateRoom (removeInv state obj) curr_location (addObject item_obj this_room), response)
+  | carrying state obj = (updateRoom (removeInv state obj) curr_location (addObject obj this_room), response)
   | otherwise          = (state, "No such item")
   where curr_location = location_id state
         this_room     = getRoomData state
-        response      = obj ++ " is put outside the bag"
-        item_obj      = findObj obj (inventory state)
+        response      = (obj_name obj) ++ " is put outside the bag"
+        --item_obj      = findObj obj (inventory state)
+        -- TODO: find object maybe allow to return Maybe Object
         -- can't say in the room (street is not a room)
 
 {- Don't update the state, just return a message giving the full description
    of the object. As long as it's either in the room or the player's 
    inventory! -}
 
-examine :: Action
-examine obj state | carrying state obj        = (state, obj_desc (findObj    obj (inventory state)))
-                  | objectHere obj this_room  = (state, obj_desc (objectData obj this_room))
+-- TODO: findObj can return Maybe Obj
+-- Or just use a function that returns boolean to check first
+examine :: ActionObj
+examine obj state | carrying state obj        = (state, obj_desc obj)
+                  | objectHere obj this_room  = (state, obj_desc obj)
                   | otherwise                 = (state, "")
                   where this_room = getRoomData state
 
@@ -212,15 +218,17 @@ examine obj state | carrying state obj        = (state, obj_desc (findObj    obj
    object in the player's inventory to be a new object, a "full mug".
 -}
 
-pour :: Action
+--TODO:??
+--TODO: thought not to use object here
+pour :: ActionObj
 pour obj state
-  | obj == "coffee" && carrying state "mug" && carrying state "coffee" =
+  | obj == coffeepot && carrying state mug && carrying state coffeepot =
     (state {
         inventory = (fullmug : filter (\x -> not (x == mug)) (inventory state)),
         poured = True
         }, "Coffee Poured")
-  | obj == "coffee"                                                    =(state, "Get mug and coffee")
-  | otherwise                                                          = (state, "can't pour " ++ obj)
+  | obj == coffeepot                                                   = (state, "Get mug and coffee")
+  | otherwise                                                          = (state, "can't pour coffee")
 
 {- Drink the coffee. This should only work if the player has a full coffee 
    mug! Doing this is required to be allowed to open the door. Once it is
@@ -230,18 +238,18 @@ pour obj state
 -}
 
 -- Unsure
-drink :: Action
+drink :: ActionObj
 drink obj state
   | isCoffee && isFull && hasBrushed = ( state {
                                           inventory = (mug : filter (\x -> not (x == fullmug)) (inventory state)),
                                           caffeinated = True,
                                           poured = False
-                                          },"You feel energized")
+                                          }, "You feel energized")
   | hasBrushed == False              = (state, "Brush your teeth before you drink coffee")--does not drinnk
   | otherwise                        = (state, "You need a full coffee mug for that")
         where
           isFull     = poured state
-          isCoffee   = obj == "coffee"
+          isCoffee   = obj == coffeepot
           hasBrushed = brushed state
 
 {- Open the door. Only allowed if the player has had coffee! 
@@ -254,7 +262,7 @@ drink obj state
 
 -- What if the door is already open?
 open :: Action
-open obj state
+open str state
   | not inHall && not inPorch                    = (state, "There's no door here")
   | inHall  && doorUnlocked && caffeinated state = 
      (updateRoom state curr_location hallDesc, "Opened the door")-- unlocked front door 
@@ -272,31 +280,31 @@ open obj state
               maskWorn      = masked state
 
 unlock :: Action-- no need to be caffinated to unlock door
-unlock obj state | not hasKey                        = (state, "Have you lost your key again?")
-                 | inHall && hasKey && obj == "door" = (state {unlocked = True}, "Unlocked the door")
+unlock str state | not hasKey                        = (state, "Have you lost your key again?")
+                 | inHall && hasKey && str == "door" = (state {unlocked = True}, "Unlocked the door")
                  | otherwise                         = (state, "You can't unlock that")
                       where inHall        = curr_location == "hall"
                             curr_location = location_id state
-                            hasKey        = carrying state "key"
+                            hasKey        = carrying state key
 
-apply :: Action
-apply obj state | obj == "toothpaste" && gotBrush && gotPaste = (state{pasteApplied = True}, "Paste applied to brush")
+apply :: ActionObj
+apply obj state | obj == paste && gotBrush && gotPaste = (state{pasteApplied = True}, "Paste applied to brush")
                 | gotBrush && gotPaste = (state, "Please apply \"toothpaste\" to the brush")
                 | otherwise = (state, "Please attain brush and paste")
-                  where gotBrush = carrying state "toothbrush"
-                        gotPaste = carrying state "toothpaste"
+                  where gotBrush = carrying state toothbrush
+                        gotPaste = carrying state paste
 
 brush :: Action
-brush obj state | pasteApplied' && gotBrush && gotPaste && obj == "teeth" = (state{brushed = True, pasteApplied = False}, "Your teeth are shining")
+brush str state | pasteApplied' && gotBrush && gotPaste && str == "teeth" = (state{brushed = True, pasteApplied = False}, "Your teeth are shining")
                 | gotBrush && gotPaste = (state, "Please apply \"paste\" to the brush")
                 | otherwise = (state, "Please attain toothbrush and paste")
-                  where gotBrush = carrying state "toothbrush"
-                        gotPaste = carrying state "toothpaste"
+                  where gotBrush = carrying state toothbrush
+                        gotPaste = carrying state paste
                         pasteApplied' = pasteApplied state
-wear :: Action
+wear :: ActionObj
 wear obj state | not (carrying state obj) = (state, "You're not carrying that at the moment")
-               | obj == "mask"            = (state{masked = True }, "Mask worn")
-               | obj == "glasses"         = (state{blind  = False}, "Wow!")
+               | obj == mask            = (state{masked = True }, "Mask worn")
+               | obj == glasses         = (state{blind  = False}, "Wow!")
 {- Don't update the game state, just list what the player is carrying -}
 
 inv :: Command
