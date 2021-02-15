@@ -42,7 +42,7 @@ lounge = Room "You are in the lounge."
 
 -- New data about the hall for when we open the door
 
-openedhall = "You are in the hallway. The front door is open. "
+openedhall  = "You are in the hallway. The front door is open. "
 openedexits = [Exit East "To the east is a kitchen. " "kitchen",
                Exit South "To the south is a lounge. " "lounge",
                Exit Outside "You can go outside. " "porch"]
@@ -68,5 +68,6 @@ gameworld = [("bedroom", bedroom),
              ("bathroom",bathroom)]
 
 initState :: GameData
-initState = GameData "bedroom" gameworld [mask] False False True False False False False False 
-
+initState = GameData "bedroom" gameworld [mask] False False True False False False False False
+--                   locationID         inventory  caffeinated  finished  pasteApplied  unlocked
+--                               world         poured      blind      masked      brushed
