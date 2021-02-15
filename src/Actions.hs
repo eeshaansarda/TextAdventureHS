@@ -14,6 +14,7 @@ actions "examine" = Just examine
 actions "drink"   = Just drink
 actions "open"    = Just open
 actions "wear"    = Just wear
+actions "remove"    = Just remove
 actions "unlock"  = Just unlock
 actions "apply"   = Just apply
 actions "brush"   = Just Actions.brush
@@ -306,8 +307,17 @@ brush str state | pasteApplied' && gotBrush && str == "teeth" = (state{brushed =
                         pasteApplied' = pasteApplied state
 wear :: ActionObj
 wear obj state | not (carrying state obj) = (state, "You're not carrying that at the moment")
-               | obj == mask            = (state{masked = True }, "Mask worn")
-               | obj == glasses         = (state{blind  = False}, "Wow!")
+               | obj == mask              = (newState {masked = True }, "Mask worn")
+               | obj == glasses           = (newState {blind  = False}, "Wow!")
+               | otherwise                = (state, "You can't wear that")
+                 where newState = removeInv state obj -- take item out of inventory, since we're wearing it now
+                                  
+remove :: ActionObj
+remove obj state | obj == mask && masked state         = (newState {masked = False}, "Mask removed and placed in your inventory")
+                 | obj == glasses && not (blind state) = (newState {blind  = True}, "Glasses removed and placed in your inventory")
+                 | otherwise                           = (state, "You're not wearing that at the moment")
+                   where newState = addInv state obj
+
 {- Don't update the game state, just list what the player is carrying -}
 
 inv :: Command

@@ -10,7 +10,7 @@ data Direction' = North | East | South | West | Inside | Outside
 --x---------------------x------------------x--
 data Action' = Go Direction' | Get Object | Put Object | Pour Object
              | Examine Object | Drink Object | Open String| Wear Object
-             | Unlock String | Apply Object | Brush String
+             | Remove Object | Unlock String | Apply Object | Brush String
    deriving Show
 --x---------------------x------------------x--
 
