@@ -316,7 +316,7 @@ remove :: ActionObj
 remove obj state | obj == mask && masked state         = (newState {masked = False}, "Mask removed and placed in your inventory")
                  | obj == glasses && not (blind state) = (newState {blind  = True}, "Glasses removed and placed in your inventory")
                  | otherwise                           = (state, "You're not wearing that at the moment")
-                   where newState = addInv state obj
+                   where newState = addInv state obj -- place item into inventory
 
 {- Don't update the game state, just list what the player is carrying -}
 
@@ -333,4 +333,4 @@ quit state = (state { finished = True }, "Bye bye")
 -- TODO may need to update
 -- Remove at the last
 help :: Command
-help state = (state, " Actions:\n\t go get drop pour examine drink open unlock wear apply brush \n\n Commands: \n\t ? inventory quit")
+help state = (state, " Actions:\n\t go get drop pour examine drink open unlock wear remove apply brush \n\n Commands: \n\t ? inventory quit")
