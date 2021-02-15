@@ -108,7 +108,7 @@ getObject "key" = Just key
 getObject "mask" = Just mask
 getObject "glasses" = Just glasses
 getObject "toothbrush" = Just toothbrush
-getObject "paste" = Just paste
+getObject "toothpaste" = Just toothpaste
 getObject _ = Nothing
 -----------
 

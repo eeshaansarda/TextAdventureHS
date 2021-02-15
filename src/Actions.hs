@@ -291,18 +291,18 @@ unlock str state | not hasKey                        = (state, "Have you lost yo
                             hasKey        = carrying state key
 
 apply :: ActionObj
-apply obj state | obj == paste && gotBrush && gotPaste = (state{pasteApplied = True}, "Paste applied to brush")
+apply obj state | obj == toothpaste && gotBrush && gotPaste = (state{pasteApplied = True}, "Toothpaste applied to brush")
                 | gotBrush && gotPaste = (state, "Please apply \"toothpaste\" to the brush")
-                | otherwise = (state, "Please attain brush and paste")
+                | otherwise = (state, "Please attain brush and toothpaste")
                   where gotBrush = carrying state toothbrush
-                        gotPaste = carrying state paste
+                        gotPaste = carrying state toothpaste
 
 brush :: Action
 brush str state | pasteApplied' && gotBrush && str == "teeth" = (state{brushed = True, pasteApplied = False}, "Your teeth are shining")
-                | gotBrush && gotPaste = (state, "Please apply \"paste\" to the brush")
+                | gotBrush && gotPaste = (state, "Please apply \"toothpaste\" to the brush")
                 | otherwise = (state, "Please attain toothbrush and paste")
                   where gotBrush = carrying state toothbrush
-                        gotPaste = carrying state paste
+                        gotPaste = carrying state toothpaste
                         pasteApplied' = pasteApplied state
 wear :: ActionObj
 wear obj state | not (carrying state obj) = (state, "You're not carrying that at the moment")

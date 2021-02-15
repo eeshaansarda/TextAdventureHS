@@ -6,7 +6,7 @@ won :: GameData -> Bool
 won gd = location_id gd == "street"
 
 
-mug, fullmug, coffeepot, key, mask, toothbrush, paste :: Object
+mug, fullmug, coffeepot, key, mask, toothbrush, toothpaste :: Object
 mug         = Obj "mug" "a coffee mug" "A coffee mug"
 fullmug     = Obj "mug" "a full coffee mug" "A coffee mug containing freshly brewed coffee"
 coffeepot   = Obj "coffee" "a pot of coffee" "A pot containing freshly brewed coffee"
@@ -14,7 +14,7 @@ key         = Obj "key" "a key" "A small, silver key"
 mask        = Obj "mask" "a mask" "A cloth face mask"
 glasses     = Obj "glasses" "a pair of glasses" "A pair of glasses, with a very heavy prescription"
 toothbrush  = Obj "toothbrush" "a toothbrush" "a blue tooth toothbrush"
-paste       = Obj "toothpaste" "toothpaste" "colgate extra fresh toothpaste"
+toothpaste  = Obj "toothpaste" "toothpaste" "colgate extra fresh toothpaste"
 
 bedroom, kitchen, hall, street :: Room
 bedroom = Room "You are in your bedroom."
@@ -29,7 +29,7 @@ kitchen = Room "You are in the kitchen."
 
 bathroom = Room "You are in the bathroom."
                 [Exit East "To the east is your bedroom. " "bedroom"]
-                [toothbrush,paste]
+                [toothbrush,toothpaste]
 
 hall = Room "You are in the hallway. The front door is closed. "
             [Exit East "To the east is a kitchen. " "kitchen",
