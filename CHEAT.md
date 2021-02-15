@@ -10,7 +10,7 @@ Don't worry. Here's how to do it.
 3. go west
 4. get toothbrush
 5. get toothpaste
-6. apply paste
+6. apply toothpaste
 7. brush teeth
 8. go east
 9. go north
