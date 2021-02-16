@@ -1,5 +1,6 @@
 module Actions where
 
+import qualified Data.ByteString.Lazy as B
 import Data.Aeson
 import World
 import DataDecl
@@ -290,13 +291,14 @@ help state = (state, " Actions:\n\t go get drop pour examine drink open unlock w
 
 save::String -> GameData -> IO()
 save path state =do 
-                  writeFile path (encode state)
-                  print "Done"
+                  json <- B.writeFile path (encode state) 
+                  print ("ok")
 
-read'::String ->IO String
-read' path = readFile path
+read'::String ->IO()
+read' path = do 
+                  json <- decode <$> B.readFile path
+                  print (json :: GameData)
 {-
-
 
 save'::String-> GameData ->IO()
 save' path _ =  "(show state)"
@@ -306,3 +308,5 @@ load path state = decode (read' path)
 
 
 -}
+
+--https://www.reddit.com/r/haskell/comments/3wjddo/can_someone_help_me_with_aeson/
