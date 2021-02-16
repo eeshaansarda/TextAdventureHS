@@ -9,6 +9,7 @@ import Control.Monad
 import System.IO
 import System.Exit
 import Data.Char
+import Test.QuickCheck
 
 winmessage = "Congratulations, you have made it outside.\n"
 
@@ -47,3 +48,13 @@ repl state = do putStrFuzzy state (show state)
 main :: IO ()
 main = do repl initState
           return ()
+
+{-
+  ___       _    _    ___ _           _     _____       _      
+ / _ \ _  _(_)__| |__/ __| |_  ___ __| |__ |_   _|__ __| |_ ___
+| (_) | || | / _| / / (__| ' \/ -_) _| / /   | |/ -_|_-<  _(_-<
+ \__\_\\_,_|_\__|_\_\\___|_||_\___\__|_\_\   |_|\___/__/\__/__/
+-}
+prop_fuzz  :: Char -> Bool
+prop_fuzz x = (x == x) || (x == '▒')
+              where fuzzed = fuzz x
