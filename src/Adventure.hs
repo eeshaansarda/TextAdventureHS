@@ -10,6 +10,7 @@ import System.IO
 import System.Console.Haskeline
 import System.Exit
 import Data.Char
+import Data.List
 
 import Test.QuickCheck
 
@@ -32,9 +33,22 @@ putStrFuzzy state string | blind state = outputStr (map (fuzz) string)
 putStrLnFuzzy :: GameData -> String -> InputT IO ()
 putStrLnFuzzy state string = putStrFuzzy state (string ++ "\n")
 
+-- Completion code based on example by C. A. McCann (https://stackoverflow.com/a/6165913/10664143)
+commandList = ["go", "get", "drop", "pour", "examine", "drink", "open", "unlock", "wear", "remove", "apply", "brush", "?", "inventory", "quit"]
+
+commandSearch :: String -> [Completion]
+commandSearch str = map simpleCompletion $ filter (str `isPrefixOf`) commandList
+
+settings :: Settings IO
+settings  = Settings { historyFile = Just "", -- don't save history
+                       complete = completeWord Nothing " \t" $ return . commandSearch,
+                       autoAddHistory = True
+                      }
+-- End completion code
+
 {-| Starts the main game loop. -}
 main :: IO ()
-main = runInputT defaultSettings (loop initState)
+main = runInputT settings (loop initState)
        where
            loop :: GameData -> InputT IO ()
            loop state  = do
@@ -46,6 +60,7 @@ main = runInputT defaultSettings (loop initState)
                                              putStrLnFuzzy state ("\n\n" ++ msg ++ "\n")
                                              if (won state') then do outputStrLn winmessage
                                                                      return ()
+                                             else if (finished state') then return ()
                                              else loop state'
 
 {-
