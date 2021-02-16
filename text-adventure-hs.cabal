@@ -65,6 +65,7 @@ executable text-adventure-hs
   -- Other library packages from which modules are imported.
   build-depends:        base >=4.13 && <4.14,
                         aeson,
+                        haskeline,
                         QuickCheck
 
   -- Directories containing source files.
