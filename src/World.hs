@@ -72,9 +72,12 @@ gameworld = [("bedroom", bedroom),
 
 initState :: GameData
 initState = GameData "bedroom" gameworld [mask] False False True False False False False False
+
 --                   locationID         inventory  caffeinated  finished  pasteApplied  unlocked
 --                               world         poured      blind      masked      brushed
 
+----------------------------------------------------------
+{-                       for Load and save-}
 instance ToJSON GameData where
     toEncoding = genericToEncoding defaultOptions
 

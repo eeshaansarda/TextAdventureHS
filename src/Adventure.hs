@@ -34,7 +34,7 @@ putStrLnFuzzy :: GameData -> String -> InputT IO ()
 putStrLnFuzzy state string = putStrFuzzy state (string ++ "\n")
 
 -- Completion code based on example by C. A. McCann (https://stackoverflow.com/a/6165913/10664143)
-commandList = ["go", "get", "drop", "pour", "examine", "drink", "open", "unlock", "wear", "remove", "apply", "brush", "?", "inventory", "quit"]
+commandList = ["go", "get", "drop", "pour", "examine", "drink", "open", "unlock", "wear", "remove", "apply", "brush", "?", "inventory", "quit","save","load"]
 
 commandSearch :: String -> [Completion]
 commandSearch str = map simpleCompletion $ filter (str `isPrefixOf`) commandList

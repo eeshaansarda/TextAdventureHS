@@ -10,6 +10,7 @@ import DataDecl
 --- Parser
 process :: GameData -> String -> (GameData, String)
 process state input
+  | not (length actionlist == 0) && (head actionlist)
   | not (length commandlist == 0) = commands (fst (head commandlist)) state
   | not (length actionlist == 0)  = actions  (fst (head actionlist))  state
   | otherwise                     = (state, "I don't understand")
@@ -132,3 +133,6 @@ commands :: Command' -> GameData -> (GameData, String)
 commands Inventory state = inv state
 commands Help      state = help state
 commands Quit      state = quit state
+
+getSave::Action' -> GameData -> (GameData, String)
+actions (Save str)      state = save str state

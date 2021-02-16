@@ -4,7 +4,7 @@ import qualified Data.ByteString.Lazy as B
 import Data.Aeson
 import World
 import DataDecl
-import Test.QuickCheck
+--import Test.QuickCheck
 
 {- | Given a direction and a room to move from, return the room id in
    that direction, if it exists.
@@ -295,19 +295,17 @@ save path state =do
                   json <- B.writeFile path (encode state) 
                   print ("ok")
 
-read'::String ->IO()
-read' path = do 
+load::String ->IO()
+load path = do 
                   json <- decode <$> B.readFile path
-                  print (json :: GameData)
-{-
+                  print (update (Just (json ::Maybe GameData)))
 
+update :: GameData -> GameData
+{-
 save'::String-> GameData ->IO()
 save' path _ =  "(show state)"
-
 load::Action
 load path state = decode (read' path)
-
-
 -}
 
 --https://www.reddit.com/r/haskell/comments/3wjddo/can_someone_help_me_with_aeson/
