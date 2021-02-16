@@ -28,10 +28,10 @@ homepage:            https://studres.cs.st-andrews.ac.uk/2020_2021/CS2006/Practi
 -- bug-reports:
 
 -- The license under which the package is released.
-license:             StAndrewsCompSciCoursework
+license:             OtherLicense
 
 -- The file containing the license text.
-license-file:        LICENSE
+-- license-file:        LICENSE
 
 -- The package author(s).
 author:              190020857, 190022658, 200012696
