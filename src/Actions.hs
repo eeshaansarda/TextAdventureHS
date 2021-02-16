@@ -5,12 +5,9 @@ import DataDecl
 
 {- | Given a direction and a room to move from, return the room id in
    that direction, if it exists.
-
 e.g. try these at the ghci prompt
-
 *Main> move "north" bedroom
 Just "kitchen"
-
 *Main> move "north" kitchen
 Nothing
 -}
@@ -82,11 +79,9 @@ Define the "go" action. Given a direction and a game state, update the game
 state with the new location. If there is no exit that way, report an error.
 Remember Actions return a 2-tuple of GameData and String. The String is
 a message reported to the player.
-
 e.g.
 *Main> go "north" initState
 (kitchen,"OK")
-
 -}
 go          :: ActionDir
 go dir state = check (move dir (getRoomData state))
@@ -98,16 +93,11 @@ go dir state = check (move dir (getRoomData state))
 save           ::Action
 save path state = message (writeFile (prepareP path) (show state))
                     where message _ =(state,"Good")
-
-
 prepareP     :: String -> FilePath
 prepareP path = path
-
-
 load           :: Action
 load path state = message ( prepareS ( path))
                      where message a =(a,"Good")
-
 prepareS     :: FilePath -> GameData
 prepareS path = do let stateStr <- readFile path
                    state = read stateStr
@@ -179,7 +169,6 @@ pour obj state
    Drink the coffee. This only works if the player has a full coffee 
    mug! Doing this is required to be allowed to open the door. Once it is
    done, also update the 'caffeinated' flag in the game state.
-
    Also, put the empty coffee mug back in the inventory!
 -}
 drink :: ActionObj
@@ -296,10 +285,14 @@ remove obj state | obj == mask && masked state         = (newState {masked = Fal
 {-| Don't update the game state, just list what the player is carrying -}
 inv      :: Command
 inv state = (state, showInv (inventory state))
-   where showInv [] = "You aren't carrying anything"
+   where showInv [] = "You aren't carrying anything" ++ maskAndGlass
          showInv xs = "You are carrying:\n" ++ showInv' xs
-         showInv' [x] = obj_longname x
+         showInv' [x] = obj_longname x ++ maskAndGlass
          showInv' (x:xs) = obj_longname x ++ "\n" ++ showInv' xs
+         maskAndGlass| masked state && not(blind state) = "\nYou are wearing mask and Glasses" 
+                     | masked state                     = "\nYou are wearing mask" 
+                     | not (blind state)                = "\nYou are wearing Glasses"
+                     |otherwise                         = "\nYou are not wearing Mask or Glasses"
 
 {-| End the game. -}
 quit      :: Command
@@ -309,3 +302,24 @@ quit state = (state { finished = True }, "Bye bye")
 {-| List all possible actions and commands in the game -}
 help      :: Command
 help state = (state, " Actions:\n\t go get drop pour examine drink open unlock wear remove apply brush \n\n Commands: \n\t ? inventory quit")
+
+
+{-
+save::String -> Object -> String
+save path state = (encode state)
+
+save'::String-> GameData ->IO()
+save' path _ = path "(show state)"
+-}
+
+
+
+
+
+{-
+load::Action
+load path state = decode (read' path)
+
+read'::String -> IO String()
+read' path = readFile path
+-}

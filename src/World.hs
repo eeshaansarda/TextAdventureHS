@@ -1,12 +1,13 @@
 module World where
 
+import Data.Aeson
 import DataDecl
 
 won :: GameData -> Bool
 won gd = location_id gd == "street"
 
 
-mug, fullmug, coffeepot, key, mask, toothbrush, toothpaste :: Object
+mug, fullmug, coffeepot, key, mask, toothbrush, toothpaste :: DataDecl.Object
 mug         = Obj "mug" "a coffee mug" "A coffee mug"
 fullmug     = Obj "mug" "a full coffee mug" "A coffee mug containing freshly brewed coffee"
 coffeepot   = Obj "coffee" "a pot of coffee" "A pot containing freshly brewed coffee"
@@ -66,6 +67,13 @@ gameworld = [("bedroom", bedroom),
              ("lounge", lounge),
              ("porch", porch),
              ("bathroom",bathroom)]
+{-
+instance ToJSON GameData where
+    toEncoding = genericToEncoding defaultOptions
+
+instance FromJSON GameData
+-}
+
 
 initState :: GameData
 initState = GameData "bedroom" gameworld [mask] False False True False False False False False

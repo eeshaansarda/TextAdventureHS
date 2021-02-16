@@ -1,6 +1,9 @@
 module DataDecl where
 
 -- Data Declaration -------------------------------------------
+{-# LANGUAGE DeriveGeneric #-}
+
+import GHC.Generics
 
 data Command' = Quit | Inventory | Help
    deriving Show
@@ -22,7 +25,7 @@ data Object = Obj { obj_name :: String,
 
 data Exit = Exit { exit_dir :: Direction',
                    exit_desc :: String,
-                   room :: String }
+                   room :: String } 
    deriving Eq
 --x---------------------x------------------x--
 
@@ -43,7 +46,7 @@ data GameData = GameData { location_id :: String, -- where player is
                            pasteApplied :: Bool,-- paste has been applied to the tooth-brush
                            brushed :: Bool, -- is teeth brushed
                            unlocked :: Bool -- is the front door locked
-                         }
+                         }  
 ------------------------------------------------------------------
 
 -- Show ---------------------------------------------------------
