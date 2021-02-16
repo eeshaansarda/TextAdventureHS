@@ -4,6 +4,7 @@ import qualified Data.ByteString.Lazy as B
 import Data.Aeson
 import World
 import DataDecl
+import Test.QuickCheck
 
 {- | Given a direction and a room to move from, return the room id in
    that direction, if it exists.
@@ -275,10 +276,10 @@ inv state = (state, showInv (inventory state))
          showInv xs = "You are carrying:\n" ++ showInv' xs
          showInv' [x] = obj_longname x ++ maskAndGlass
          showInv' (x:xs) = obj_longname x ++ "\n" ++ showInv' xs
-         maskAndGlass| masked state && not(blind state) = "\nYou are wearing mask and Glasses" 
+         maskAndGlass| masked state && not(blind state) = "\nYou are wearing mask and glasses" 
                      | masked state                     = "\nYou are wearing mask" 
-                     | not (blind state)                = "\nYou are wearing Glasses"
-                     |otherwise                         = "\nYou are not wearing Mask or Glasses"
+                     | not (blind state)                = "\nYou are wearing glasses"
+                     |otherwise                         = "\nYou are not wearing any accessories"
 
 {-| End the game. -}
 quit      :: Command
