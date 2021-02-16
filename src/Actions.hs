@@ -1,5 +1,6 @@
 module Actions where
 
+import Data.Aeson
 import World
 import DataDecl
 
@@ -21,13 +22,13 @@ move dir rm = if length exit > 0 then -- exits exist
                where exit = filter (\candidate -> exit_dir candidate == dir) (exits rm)
 
 {- | Return True if the object appears in the room. -}
-objectHere     :: Object -> Room -> Bool
+objectHere     :: DataDecl.Object -> Room -> Bool
 objectHere o rm = elem o [x | x <- objects rm]
               -- Return True if object `o` is a member of the list of names of objects in room `rm`
 
 {- | Given an object id and a room description, return a new room description
      without that object -}
-removeObject      :: Object -> Room -> Room
+removeObject      :: DataDecl.Object -> Room -> Room
 removeObject o rm = Room (room_desc rm)
                          (exits rm)
                          (filter (\candidate -> not(candidate == o)) (objects rm))
@@ -35,21 +36,21 @@ removeObject o rm = Room (room_desc rm)
 
 {- | Given an object and a room description, return a new room description
      with that object added -}
-addObject     :: Object -> Room -> Room
+addObject     :: DataDecl.Object -> Room -> Room
 addObject o rm = rm{ objects = o : objects rm }
 
 -- TODO: Uses string
 {- | Given an object id and a list of objects, return the object data. Note
      that you can assume the object is in the list (i.e. that you have
      checked with 'objectHere') -}
-findObj     :: String -> [Object] -> Object
+findObj     :: String -> [DataDecl.Object] -> DataDecl.Object
 findObj o ds = head (filter (search o) ds) -- used head as the list will never be empty
                where search id obj | obj_name obj == id  = True
                                    | otherwise           = False
 
 -- TODO: Uses string
 {- | Use 'findObj' to find an object in a room description -}
-objectData     :: String -> Room -> Object
+objectData     :: String -> Room -> DataDecl.Object
 objectData o rm = findObj o (objects rm)
 
 -- TODO: Can use string here?
@@ -62,16 +63,16 @@ updateRoom gd rmid rmdata = gd {
 
 {- | Given a game state and an object id, find the object in the current
      room and add it to the player's inventory -}
-addInv       :: GameData -> Object -> GameData
+addInv       :: GameData -> DataDecl.Object -> GameData
 addInv gd obj = gd{inventory = obj : inventory gd}
 
 {- | Given a game state and an object id, remove the object from the
      inventory. -}
-removeInv       :: GameData -> Object -> GameData
+removeInv       :: GameData -> DataDecl.Object -> GameData
 removeInv gd obj = gd { inventory = filter (\candidate -> not(candidate == obj)) (inventory gd) }
 
 {- | Does the inventory in the game state contain the given object? -}
-carrying       :: GameData -> Object -> Bool
+carrying       :: GameData -> DataDecl.Object -> Bool
 carrying gd obj = elem obj [x | x <- inventory gd]
 
 {- |
@@ -87,22 +88,6 @@ go          :: ActionDir
 go dir state = check (move dir (getRoomData state))
                   where check Nothing  = (state, "Unknown location")
                         check (Just a) = (state { location_id = a }, "Moved")
-
--- TODO
-{-
-save           ::Action
-save path state = message (writeFile (prepareP path) (show state))
-                    where message _ =(state,"Good")
-prepareP     :: String -> FilePath
-prepareP path = path
-load           :: Action
-load path state = message ( prepareS ( path))
-                     where message a =(a,"Good")
-prepareS     :: FilePath -> GameData
-prepareS path = do let stateStr <- readFile path
-                   state = read stateStr
-                   return state
---}
 
 
 {- |
@@ -303,23 +288,21 @@ quit state = (state { finished = True }, "Bye bye")
 help      :: Command
 help state = (state, " Actions:\n\t go get drop pour examine drink open unlock wear remove apply brush \n\n Commands: \n\t ? inventory quit")
 
+save::String -> GameData -> IO()
+save path state =do 
+                  writeFile path (encode state)
+                  print "Done"
 
+read'::String ->IO String
+read' path = readFile path
 {-
-save::String -> Object -> String
-save path state = (encode state)
+
 
 save'::String-> GameData ->IO()
-save' path _ = path "(show state)"
--}
+save' path _ =  "(show state)"
 
-
-
-
-
-{-
 load::Action
 load path state = decode (read' path)
 
-read'::String -> IO String()
-read' path = readFile path
+
 -}
