@@ -2,6 +2,7 @@ module Actions where
 
 import World
 import DataDecl
+import Test.QuickCheck
 
 {- | Given a direction and a room to move from, return the room id in
    that direction, if it exists.

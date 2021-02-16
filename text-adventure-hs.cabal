@@ -56,17 +56,19 @@ executable text-adventure-hs
   -- .hs or .lhs file containing the Main module.
   main-is:             Adventure.hs
 
-  -- Modules included in this executable, other than Main.
-  -- other-modules:
+  -- Modules icluded in this executable, other than Main.
+  other-modules: Actions, DataDecl, Parsing, World, WorldParser
 
   -- LANGUAGE extensions used by modules in this package.
   -- other-extensions:
 
   -- Other library packages from which modules are imported.
-  build-depends:       base >=4.13 && <4.14
+  build-depends:        base >=4.13 && <4.14,
+                        aeson,
+                        QuickCheck
 
   -- Directories containing source files.
-  -- hs-source-dirs:   src
+  hs-source-dirs:   src/
 
   -- Base language which the package is written in.
   default-language:    Haskell2010
