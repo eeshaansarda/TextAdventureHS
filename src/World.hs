@@ -1,5 +1,5 @@
 module World where
-
+    
 import Data.Aeson
 import DataDecl
 
@@ -67,15 +67,38 @@ gameworld = [("bedroom", bedroom),
              ("lounge", lounge),
              ("porch", porch),
              ("bathroom",bathroom)]
-{-
-instance ToJSON GameData where
-    toEncoding = genericToEncoding defaultOptions
 
-instance FromJSON GameData
--}
 
 
 initState :: GameData
 initState = GameData "bedroom" gameworld [mask] False False True False False False False False
+
 --                   locationID         inventory  caffeinated  finished  pasteApplied  unlocked
 --                               world         poured      blind      masked      brushed
+
+----------------------------------------------------------
+{-                       for Load and save-}
+instance ToJSON GameData where
+    toEncoding = genericToEncoding defaultOptions
+
+instance FromJSON GameData
+
+instance ToJSON Room where
+    toEncoding = genericToEncoding defaultOptions
+
+instance FromJSON Room
+
+instance ToJSON Exit where
+    toEncoding = genericToEncoding defaultOptions
+
+instance FromJSON Exit
+
+instance ToJSON Direction' where
+    toEncoding = genericToEncoding defaultOptions
+
+instance FromJSON Direction'
+
+instance ToJSON DataDecl.Object where
+    toEncoding = genericToEncoding defaultOptions
+
+instance FromJSON DataDecl.Object

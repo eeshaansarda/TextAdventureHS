@@ -10,11 +10,18 @@ import DataDecl
 --- Parser
 process :: GameData -> String -> (GameData, String)
 process state input
+  | not (length actionslist == 0) = doActions (fst (head actionslist)) state
   | not (length commandlist == 0) = commands (fst (head commandlist)) state
   | not (length actionlist == 0)  = actions  (fst (head actionlist))  state
   | otherwise                     = (state, "I don't understand")
         where commandlist = parse command input
               actionlist  = parse action input
+              actionslist = parse twoActions input
+
+              doActions :: (Action', Action') -> GameData -> (GameData, String)
+              doActions (x, y) state = (state'', output ++ "\n" ++ output')
+                        where (state', output) = actions x state
+                              (state'', output') = actions y state'
 
 -- Command -
 command :: Parser Command'
@@ -31,7 +38,17 @@ getCommand "inventory" = Just Inventory
 getCommand "quit"      = Just Quit
 getCommand _           = Nothing
 ------------
+-- Multiple Actions -
 
+-- can do many with a bit of modification
+twoActions :: Parser (Action', Action')
+twoActions = do x <- action
+                y <- identifier
+                z <- action
+                if y=="then" || y=="and" then return (x,z)
+                  else failure
+
+-----------
 -- Action -
 -- Here need to parse direction / object / string first
 
@@ -132,3 +149,6 @@ commands :: Command' -> GameData -> (GameData, String)
 commands Inventory state = inv state
 commands Help      state = help state
 commands Quit      state = quit state
+
+getSave::Action' -> GameData -> (GameData, String)
+actions (Save str)      state = save str state
