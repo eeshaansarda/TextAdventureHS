@@ -27,6 +27,12 @@ Instructions for running the game can be found in `README.md`. Instructions to c
 
 An extra puzzle was added to the start of the game, which involves the player picking up and wearing their **glasses**. When not wearing glasses (either because they've not been put on yet, or because the player has removed them), all program output (excluding the input prompt) is made fuzzy by replacing a selection of characters with `▒`. Initially, this was going to be done randomly, but since all Haskell functions are pure this randomness would require extra overhead which would make the code structure more complicated. This was deemed unnecessary, so instead the messages are always fuzzed in the same way -- half of alphanumeric characters are replaced with the fuzz symbol, with the rest and any punctuation remaining unchanged. The fuzzing is implemented using `putStrFuzzy` and `putStrLnFuzzy` which are abstractions on top of `outputStr`, taking both the string to output and the current game state. If the game state indicates that the player is blind, the string is fuzzed before being outputted.
 
+Before the player can drink their coffee, they also need to go to the **bathroom** to **brush their teeth**.
+
+Another additional puzzle involves the player needing a **key** to unlock and open the door. The key is in a new room, the **lounge**.
+
+The final extra puzzle requires the player to wear a **mask** before they can leave another new room, the **porch**. The mask starts hidden in the player's inventory, instead of in a room. To add some realism to the game, the player can't drink coffee while their mask is on.
+
 
 ## Testing
 
