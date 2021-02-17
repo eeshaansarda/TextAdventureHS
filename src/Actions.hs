@@ -300,10 +300,10 @@ save path state =do
 --load' path = load path
 
 
-load::String ->IO GameData
+load::String ->IO()
 load path = do 
                   json <- decode <$> B.readFile path
-                  json :: IO GameData
+                  print(json :: Maybe GameData)
 
 
 --https://www.reddit.com/r/haskell/comments/3wjddo/can_someone_help_me_with_aeson/
