@@ -23,6 +23,9 @@ Instructions for running the game can be found in `README.md`. Instructions to c
 
 ## Design
 
+**Haskeline** is used for input and output in the program. This means that control keys like backspace work correctly (unlike in standard Haskell `IO` in GHCi), and the up and down arrows can be used to browse the history. There is also support for tab completion of commands, based on code by [C. A. McCann](https://stackoverflow.com/a/6165913/10664143).
+
+An extra puzzle was added to the start of the game, which involves the player picking up and wearing their **glasses**. When not wearing glasses (either because they've not been put on yet, or because the player has removed them), all program output (excluding the input prompt) is made fuzzy by replacing a selection of characters with `▒`. Initially, this was going to be done randomly, but since all Haskell functions are pure this randomness would require extra overhead which would make the code structure more complicated. This was deemed unnecessary, so instead the messages are always fuzzed in the same way -- half of alphanumeric characters are replaced with the fuzz symbol, with the rest and any punctuation remaining unchanged. The fuzzing is implemented using `putStrFuzzy` and `putStrLnFuzzy` which are abstractions on top of `outputStr`, taking both the string to output and the current game state. If the game state indicates that the player is blind, the string is fuzzed before being outputted.
 
 
 ## Testing
