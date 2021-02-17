@@ -23,10 +23,12 @@ move dir rm = if length exit > 0 then -- exits exist
                      Nothing
                where exit = filter (\candidate -> exit_dir candidate == dir) (exits rm)
 
+
 {- | Return True if the object appears in the room. -}
 objectHere     :: DataDecl.Object -> Room -> Bool
 objectHere o rm = elem o [x | x <- objects rm]
               -- Return True if object `o` is a member of the list of names of objects in room `rm`
+
 
 {- | Given an object id and a room description, return a new room description
      without that object -}
