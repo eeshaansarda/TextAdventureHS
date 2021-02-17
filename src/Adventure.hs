@@ -109,6 +109,14 @@ prop_objHere1 item room = (objectHere item room) == True || (objectHere item roo
 
 prop_objHere2 :: Object ->Room-> Bool
 prop_objHere2 item room | (objectHere item room) && (elem item (objects room))            = True
-                        | (not (objectHere item room)) && (not (elem item (objects room)) = True
+                        | (not (objectHere item room)) && (not (elem item (objects room))) = True -- does not contain
                         | otherwise                                                       = False
 
+prop_RemoveObj ::Object -> Room-> Bool
+prop_RemoveObj item room = (not (elem item (objects room))) == elem item (objects (removeObject item room)) 
+
+prop_RemoveObjDesc ::Object -> Room-> Bool
+prop_RemoveObjDesc item room = room_desc room == room_desc (removeObject item room)
+
+prop_RemoveObjExit ::Object -> Room-> Bool
+prop_RemoveObjExit item room = length (exits room) == length (exits (removeObject item room)) 
