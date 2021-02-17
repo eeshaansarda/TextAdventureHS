@@ -63,7 +63,7 @@ executable text-adventure-hs
   -- other-extensions:
 
   -- Other library packages from which modules are imported.
-  build-depends:        base >=4.13 && <4.14,
+  build-depends:        base,
                         aeson,
                         haskeline,
                         bytestring,
