@@ -66,6 +66,7 @@ executable text-adventure-hs
   build-depends:        base >=4.13 && <4.14,
                         aeson,
                         haskeline,
+                        bytestring,
                         QuickCheck
 
   -- Directories containing source files.
