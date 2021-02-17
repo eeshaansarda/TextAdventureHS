@@ -150,5 +150,5 @@ commands Inventory state = inv state
 commands Help      state = help state
 commands Quit      state = quit state
 
-getSave::Action' -> GameData -> (GameData, String)
-actions (Save str)      state = save str state
+--getSave::Action' -> GameData -> (GameData, String)
+--actions (Save str)      state = save str state

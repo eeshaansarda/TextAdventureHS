@@ -296,18 +296,14 @@ save::String -> GameData -> IO()
 save path state =do 
                   json <- B.writeFile path (encode state) 
                   print ("ok")
+--load':: String-> GameData
+--load' path = load path
 
-load::String ->IO()
+
+load::String ->IO GameData
 load path = do 
                   json <- decode <$> B.readFile path
-                  print (update (Just (json ::Maybe GameData)))
+                  json :: IO GameData
 
-update :: GameData -> GameData
-{-
-save'::String-> GameData ->IO()
-save' path _ =  "(show state)"
-load::Action
-load path state = decode (read' path)
--}
 
 --https://www.reddit.com/r/haskell/comments/3wjddo/can_someone_help_me_with_aeson/

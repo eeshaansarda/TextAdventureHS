@@ -12,6 +12,8 @@ import System.Exit
 import Data.Char
 import Data.List
 
+
+
 import Test.QuickCheck
 
 winmessage = "Congratulations, you have made it outside.\n"
@@ -49,9 +51,9 @@ settings  = Settings { historyFile = Just "", -- don't save history
 {-| Starts the main game loop. -}
 main :: IO ()
 main = runInputT settings (loop initState)
-       where
-           loop :: GameData -> InputT IO ()
-           loop state  = do
+
+loop :: GameData -> InputT IO ()
+loop state  = do
                          putStrLnFuzzy state (show state)
                          input <- getInputLine "What now? "
                          case input of
@@ -61,7 +63,36 @@ main = runInputT settings (loop initState)
                                              if (won state') then do outputStrLn winmessage
                                                                      return ()
                                              else if (finished state') then return ()
-                                             else loop state'
+                                             else loop state'           
+           
+
+
+--https://www.reddit.com/r/haskell/comments/3wjddo/can_someone_help_me_with_aeson/
+{-
+load::Maybe String-> GameData-> IO()
+load path state =case path of
+                     Nothing -> do
+                                      outputStrLn "Please enter valid path"
+                                      loop state
+                     Just path -> do 
+                                lState <- decode <$> B.readFile path
+                                case lState :: Maybe GameData of
+                                  Nothing -> do
+                                              outputStrLn "Load failed"
+                                              loop state
+                                  Just lState -> loop lState
+-}
+
+{-
+save::String -> GameData ->IO()
+save path state = case path of
+                      Nothing -> do
+                                      print("Please enter valid path")
+                      Just path  -> do 
+                                      json <- B.writeFile path (encode state) 
+                                      print("ok")
+
+-}
 
 {-
   ___       _    _    ___ _           _     _____       _      
