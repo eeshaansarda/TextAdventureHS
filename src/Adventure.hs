@@ -103,3 +103,12 @@ save path state = case path of
 prop_fuzz  :: Char -> Bool
 prop_fuzz x = (x == x) || (x == '▒')
               where fuzzed = fuzz x
+
+prop_objHere1 :: Object ->Room-> Bool
+prop_objHere1 item room = (objectHere item room) == True || (objectHere item room) == False
+
+prop_objHere2 :: Object ->Room-> Bool
+prop_objHere2 item room | (objectHere item room) && (elem item (objects room))            = True
+                        | (not (objectHere item room)) && (not (elem item (objects room)) = True
+                        | otherwise                                                       = False
+
