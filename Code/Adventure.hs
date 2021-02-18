@@ -128,6 +128,25 @@ prop_AddObjDesc item room = room_desc room == room_desc (addObject item room)
 prop_AddObjExit :: DataDecl.Object -> Room-> Bool
 prop_AddObjExit item room = length (exits room) == length (exits (addObject item room))
 ----------------------------------------------------------------------------------
+
+instance Arbitrary DataDecl.Object where
+       arbitrary = oneof[return mug,return coffeepot,return key,return mask,return glasses,return toothbrush,return toothpaste]
+
+instance Arbitrary DataDecl.Room where
+       arbitrary = oneof[return bedroom,return kitchen,return hall,return lounge,return porch,return street,return bathroom]
+
+instance Arbitrary DataDecl.Direction' where
+       arbitrary = oneof[return North,return South,return East,return West,return Outside,return Inside]
+                                   
+                                   
+prop_findObj         :: String -> [DataDecl.Object] -> Bool
+prop_findObj obj objs | elem obj [x | y <- objs, x <- [obj_name y]] = obj_name (findObj obj objs) == obj
+                      | otherwise                                   = True
+                          
+----------------------------------------------------------------------------
+{-
+*************The following Tests have been commented out as QuickTests were not deemed apt for them
+----------------------------------------------------------------------------------------
 prop_AddInv :: GameData -> DataDecl.Object -> Bool
 prop_AddInv gm obj = length (inventory gm) + 1 == length (inventory (addInv gm obj))
 
@@ -243,22 +262,6 @@ prop_removeUnchanged1 obj gm |obj == mask    = (checkBlind gm newState') && chec
                                           && (checkLoc gm newState') && (checkWorld gm newState')
                                    newState' = (fst (remove obj gm))
 
-
-instance Arbitrary DataDecl.Object where
-       arbitrary = oneof[return mug,return coffeepot,return key,return mask,return glasses,return toothbrush,return toothpaste]
-
-instance Arbitrary DataDecl.Room where
-       arbitrary = oneof[return bedroom,return kitchen,return hall,return lounge,return porch,return street,return bathroom]
-
-instance Arbitrary DataDecl.Direction' where
-       arbitrary = oneof[return North,return South,return East,return West,return Outside,return Inside]
-                                   
-                                   
-prop_findObj         :: String -> [DataDecl.Object] -> Bool
-prop_findObj obj objs | elem obj [x | y <- objs, x <- [obj_name y]] = obj_name (findObj obj objs) == obj
-                      | otherwise                                   = True
-                          
-----------------------------------------------------------------------------
 checkUnlock:: GameData-> GameData -> Bool
 checkUnlock gm1 gm2 = unlocked gm1 == unlocked gm2
 
@@ -291,3 +294,5 @@ checkWorld gm1 gm2 = length (world gm1) == length (world gm2)
 
 checkInv :: GameData->GameData -> Bool
 checkInv gm1 gm2 = length (inventory gm1) == length (inventory gm2)
+-}
+
