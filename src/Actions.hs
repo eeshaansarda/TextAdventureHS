@@ -291,19 +291,3 @@ quit state = (state { finished = True }, "Bye bye")
 {-| List all possible actions and commands in the game -}
 help      :: Command
 help state = (state, " Actions:\n\t go get drop pour examine drink open unlock wear remove apply brush \n\n Commands: \n\t ? inventory load save quit")
-
-save::String -> GameData -> IO()
-save path state =do 
-                  json <- B.writeFile path (encode state) 
-                  print ("ok")
---load':: String-> GameData
---load' path = load path
-
-
-load::String ->IO()
-load path = do 
-                  json <- decode <$> B.readFile path
-                  print(json :: Maybe GameData)
-
-
---https://www.reddit.com/r/haskell/comments/3wjddo/can_someone_help_me_with_aeson/

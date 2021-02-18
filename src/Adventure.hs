@@ -57,8 +57,8 @@ main = runInputT settings (loop initState)
 {-| User input processing tool. Requests to load or save are handled directly, and other
     commands are interpreted by the parser and the game loop is returned to. -}
 control :: GameData -> String -> InputT IO ()
-control state cmd | isPrefixOf "load " cmd = Main.load (drop 5 cmd) state
-                  | isPrefixOf "save " cmd = Main.save (drop 5 cmd) state
+control state cmd | isPrefixOf "load " cmd = load (drop 5 cmd) state
+                  | isPrefixOf "save " cmd = save (drop 5 cmd) state
                   | otherwise              = do let (state', msg) = process state cmd
                                                 putStrLnFuzzy state ("\n\n" ++ msg ++ "\n")
                                                 if (won state') then do outputStrLn winmessage
@@ -240,11 +240,7 @@ checkMask:: GameData->GameData -> Bool
 checkMask gm1 gm2 = masked gm1 == masked gm2
 
 checkWorld :: GameData->GameData -> Bool
-<<<<<<< HEAD
-checkWorld gm1 gm2 = length (world gm1) == length (world gm2)
-=======
 checkWorld gm1 gm2 = length (world gm1) == length (world gm2) 
 
 checkInv :: GameData->GameData -> Bool
 checkInv gm1 gm2 = length (inventory gm1) == length (inventory gm2)
->>>>>>> afabd3938bd74586b0854ec460a5edd06c45950b
