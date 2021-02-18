@@ -103,7 +103,7 @@ save path state = case path of
 prop_fuzz  :: Char -> Bool
 prop_fuzz x = (x == x) || (x == '▒')
               where fuzzed = fuzz x
-
+-----------------------------------------------------------------------------
 prop_objHere1 :: Object ->Room-> Bool
 prop_objHere1 item room = (objectHere item room) == True || (objectHere item room) == False
 
@@ -111,7 +111,7 @@ prop_objHere2 :: Object ->Room-> Bool
 prop_objHere2 item room | (objectHere item room) && (elem item (objects room))            = True
                         | (not (objectHere item room)) && (not (elem item (objects room))) = True -- does not contain
                         | otherwise                                                       = False
-
+---------------------------------------------------------------------------------
 prop_RemoveObj ::Object -> Room-> Bool
 prop_RemoveObj item room =  (elem item (objects room)) == elem item (objects (removeObject item room)) 
 
@@ -120,7 +120,7 @@ prop_RemoveObjDesc item room = room_desc room == room_desc (removeObject item ro
 
 prop_RemoveObjExit ::Object -> Room-> Bool
 prop_RemoveObjExit item room = length (exits room) == length (exits (removeObject item room)) 
-
+-------------------------------------------------------------------------------------
 prop_AddObj ::Object -> Room-> Bool
 prop_AddObj item room = (not (elem item (objects room))) == elem item (objects (addObject item room)) 
 
@@ -129,3 +129,36 @@ prop_AddObjDesc item room = room_desc room == room_desc (addObject item room)
 
 prop_AddObjExit ::Object -> Room-> Bool
 prop_AddObjExit item room = length (exits room) == length (exits (addObject item room)) 
+----------------------------------------------------------------------------------
+prop_AddInv :: GameData ->Object -> Bool
+prop_AddInv gm obj = length (inventory gm) + 1 == length (inventory (addInv gm obj))
+
+prop_AddInvLocId :: GameData ->Object -> Bool
+prop_AddInvLocId gm obj = location_id gm == location_id (addInv gm obj)
+
+prop_AddInvWorld :: GameData ->Object -> Bool
+prop_AddInvWorld gm obj = length (world gm) == length (world (addInv gm obj))
+
+prop_AddInvPour :: GameData ->Object -> Bool
+prop_AddInvPour gm obj = poured gm == poured (addInv gm obj)
+
+prop_AddInvCaf :: GameData ->Object -> Bool
+prop_AddInvCaf gm obj = caffeinated gm == caffeinated (addInv gm obj)
+
+prop_AddInvBlind :: GameData ->Object -> Bool
+prop_AddInvBlind gm obj = blind gm == blind (addInv gm obj)
+
+prop_AddInvFinish :: GameData ->Object -> Bool
+prop_AddInvFinish gm obj = finished gm == finished (addInv gm obj)
+
+prop_AddInvMask :: GameData ->Object -> Bool
+prop_AddInvMask gm obj = masked gm == masked (addInv gm obj)
+
+prop_AddInvApplied :: GameData ->Object -> Bool
+prop_AddInvApplied gm obj = pasteApplied gm == pasteApplied (addInv gm obj)
+
+prop_AddInvUnlock :: GameData ->Object -> Bool
+prop_AddInvUnlock gm obj = unlocked gm == unlocked (addInv gm obj)
+
+prop_AddInvBrush :: GameData ->Object -> Bool
+prop_AddInvBrush gm obj = brushed gm == brushed (addInv gm obj)
