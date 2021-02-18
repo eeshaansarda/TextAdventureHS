@@ -16,9 +16,10 @@ This project is an implementation of a simple text adventure, as laid out the [p
     * You need to put your mask on before you can leave the porch.
   
 * Object, direction, and command strings have been replaced by dedicated data types.
+* QuickCheck has been used to perform tests to necessary functions
 * The input is accepted using Haskeline (including history and tab completion), and processed using `Parsing.hs`.
 * The parser accepts two commands at the same time, separated by "and" or "then".
-* `load` and `save` funtions were implemented
+* `load` and `save` functions were implemented
 
 In summary,all the Basic, Easy, Medium and Hard requirements are met. 
 
@@ -32,11 +33,15 @@ Instructions for running the game can be found in `README.md`. Instructions to c
 
 An extra puzzle was added to the start of the game, which involves the player picking up and wearing their **glasses**. When not wearing glasses (either because they've not been put on yet, or because the player has removed them), all program output (excluding the input prompt) is made fuzzy by replacing a selection of characters with `▒`. Initially, this was going to be done randomly, but since all Haskell functions are pure this randomness would require extra overhead which would make the code structure more complicated. This was deemed unnecessary, so instead the messages are always fuzzed in the same way -- half of alphanumeric characters are replaced with the fuzz symbol, with the rest and any punctuation remaining unchanged. The fuzzing is implemented using `putStrFuzzy` and `putStrLnFuzzy` which are abstractions on top of `outputStr`, taking both the string to output and the current game state. If the game state indicates that the player is blind, the string is fuzzed before being outputted.
 
-Before the player can drink their coffee, they also need to go to the **bathroom** to **brush their teeth**.
+Another puzzle was also added to the Game which meant the player had to go to the **bathroom** to **brush their teeth** before the player can drink their coffee . Attempting to drink the coffee without completing this puzzle would result in the player being proptedd to brush their teeth. In order to complete this puzzle,the player must go to the bath room and `get` the **toothbrush** and **toothpaste**. Then the user must `apply` the **toothpaste** and `brush` thier teeth. If the player misses any of these steps, or exicutes them in the wrong order, then they are prompted to followly the correct procedures. We had thought of adding this feature to the game to make it more relistic and enchance the user exprience.
 
-Another additional puzzle involves the player needing a **key** to unlock and open the door. The key is in a new room, the **lounge**.
+Another additional puzzle involves the player needing a **key** to unlock and open the door. The key is in a new room, the **lounge**. The player must `get` the **key** and `unlock` the front door from the **hall**. The player can only unlock the door if they possess the key. The player can then `open` the door, only if they have drunk the coffee.The front door then leads to the **porch**
 
 The final extra puzzle requires the player to wear a **mask** before they can leave another new room, the **porch**. The mask starts hidden in the player's inventory, instead of in a room. To add some realism to the game, the player can't drink coffee while their mask is on.
+
+We have decided to implement `save` and `load` by using Data.Aeson library utalise json. When saving the GameData is turned into a Json string and stored in a file of the players choice,using `writeFile`. The Json string is then read from the file of the users choice, when loading, and converted to GameData. Initialy, we thought of utilising the `show` and `read` functions to convert the Gamedata to String object. But we decided agianst this, as show already had an instance in the program and we did not want to munipulate that any further. Also the choice of external library to use Json was further motivated by the fact that the solution will be a lot simpler and easier to read.
+
+We have implemented several QuickTests. We decided agiast writing any QuickTest for **ActionDir**,**ActionObj** and **Command** types. This choice was made due to the fact that the functions of these types require a **GameData** type as input. Randomly generating GameData variables did not see like the most efficent way to test these functions. Instead we thought of just using **initState** as the GameData and randomly generate the other variables need for testing the function. We aslo decided against doing this as manual inputting all the possible input, in each game state, was a lot more suitable in testing these function. Hence, we have tested functions of these types manually covering all the inputs
 
 We switched to using `Parsing.hs` to parse user input. The system also accepts two commands at once, split by "and" or "then".
 
