@@ -204,6 +204,22 @@ prop_PutUnchanged1 obj gm = (checkUnlock gm newState') && (checkBrush gm newStat
                                      
                             where newState' = (fst (put obj gm))
 ---------------------------------------------------------------------------
+--not sure*******
+
+prop_Go :: Direction' -> GameData -> Bool
+prop_Go dir gm | validDir && (snd result == "Moved") && (location_id (fst result) /= location_id gm)                  = True
+               | (not validDir) && (snd result == "Unknown location") && (location_id (fst result) == location_id gm) = True
+               | otherwise                                                                                        = False
+                     where result =  go dir gm
+                           validDir = dir == North || dir == South || dir == East|| dir == West|| dir == Outside|| dir == Inside
+
+prop_GoUnchanged1 :: Direction'-> GameData -> Bool
+prop_GoUnchanged1 dir gm = (checkUnlock gm newState') && (checkBrush gm newState') && (checkCaf gm newState') && (checkApplied gm newState')
+                                    && (checkMask gm newState') && (checkPour gm newState') && (checkFinish gm newState') && (checkBlind gm newState')
+                                          && (checkInv gm newState') && (checkWorld gm newState')
+
+                            where newState' = fst (go dir gm)
+---------------------------------------------------------------------------
 checkUnlock:: GameData-> GameData -> Bool
 checkUnlock gm1 gm2 = unlocked gm1 == unlocked gm2
 
@@ -233,3 +249,6 @@ checkMask gm1 gm2 = masked gm1 == masked gm2
 
 checkWorld :: GameData->GameData -> Bool
 checkWorld gm1 gm2 = length (world gm1) == length (world gm2) 
+
+checkInv :: GameData->GameData -> Bool
+checkInv gm1 gm2 = length (inventory gm1) == length (inventory gm2)
