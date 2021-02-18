@@ -14,9 +14,13 @@ This project is an implementation of a simple text adventure, as laid out the [p
     * Glasses need to be collected and worn before the text prompts can be read properly.
     * You need to brush your teeth in the bathroom before you can have your morning coffee.
     * You need to put your mask on before you can leave the porch.
+  
 * Object, direction, and command strings have been replaced by dedicated data types.
 * The input is accepted using Haskeline (including history and tab completion), and processed using `Parsing.hs`.
 * The parser accepts two commands at the same time, separated by "and" or "then".
+* `load` and `save` funtions were implemented
+
+In summary,all the Basic, Easy, Medium and Hard requirements are met. 
 
 In terms of team organisation, we had regular meetings to pick out new tasks and targets, which were then added to Microsoft Planner to keep track of progress. Between meetings, people would assign tasks to themselves and complete them, and intermediate progress reports could be added to the task in Planner to further break down the work if needed, or avoid two people doing the same thing. The provided submission is a Git repository, so precise breakdown of lines of code written can be found by running `git log` or `git blame` (note though that commit identities have not been anonymised -- they contain names and email addresses instead of matriculation numbers).
 
