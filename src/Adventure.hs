@@ -154,12 +154,18 @@ prop_RemoveInvUnchanged1 obj gm = (checkUnlock gm newState') && (checkBrush gm n
 
 ------------------------------------------------------------------------
 --not sure**********
-prop_Get :: Object -> GameData -> Bool
+prop_Get :: Object -> GameData -> Bool--object being added to inv
 prop_Get obj gm| elem obj (objects (getRoomData gm))          = 
-                            length (inventory gm) + 1 == length (inventory (fst (get obj gm))) -- onject has been added to inv
+                            length (inventory gm) + 1 == length (inventory (fst (get obj gm))) -- object has been added to inv
                | elem obj (objects (getRoomData gm)) == False =
                             length (inventory gm) == length (inventory (fst (get obj gm)))
                | otherwise                                    = False
+
+prop_GetRmChange :: Object -> GameData -> Bool--object being removed from the room
+prop_GetRmChange obj gm| elem obj (objects (getRoomData gm))          = elem obj (objects cRoom') == False
+                       | elem obj (objects (getRoomData gm)) == False = elem obj (objects cRoom') == True
+                       | otherwise                                    = False
+                            where cRoom' = getRoomData (fst (get obj gm))
 
 prop_GetStr :: Object -> GameData -> Bool
 prop_GetStr obj gm| elem obj (objects (getRoomData gm))          = snd (put obj gm) == (obj_name obj) ++ " is put in inventory"
@@ -179,6 +185,12 @@ prop_Put :: Object -> GameData -> Bool
 prop_Put obj gm| elem obj (inventory gm)          =(length (inventory gm) - 1) == length (inventory (fst (put obj gm))) 
                | elem obj (inventory gm) == False = length (inventory gm) == length (inventory (fst (put obj gm)))
                | otherwise                        = False
+
+prop_PutRmChange :: Object -> GameData -> Bool
+prop_PutRmChange obj gm| elem obj (inventory gm)          = elem obj (objects cRoom') == True
+                       | elem obj (inventory gm) == False = elem obj (objects cRoom') == False
+                       | otherwise                                    = False
+                            where cRoom' = getRoomData (fst (put obj gm))
 
 prop_PutStr :: Object -> GameData -> Bool
 prop_PutStr obj gm| elem obj (inventory gm)          = snd (put obj gm) == (obj_name obj) ++ " has been dropped"
