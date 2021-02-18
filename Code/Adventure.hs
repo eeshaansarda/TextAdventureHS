@@ -253,6 +253,11 @@ instance Arbitrary DataDecl.Room where
 instance Arbitrary DataDecl.Direction' where
        arbitrary = oneof[return North,return South,return East,return West,return Outside,return Inside]
                                    
+                                   
+prop_findObj         :: String -> [DataDecl.Object] -> Bool
+prop_findObj obj objs | elem obj [x | y <- objs, x <- [obj_name y]] = obj_name (findObj obj objs) == obj
+                      | otherwise                                   = True
+                          
 ----------------------------------------------------------------------------
 checkUnlock:: GameData-> GameData -> Bool
 checkUnlock gm1 gm2 = unlocked gm1 == unlocked gm2
