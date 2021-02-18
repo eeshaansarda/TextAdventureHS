@@ -290,7 +290,7 @@ quit state = (state { finished = True }, "Bye bye")
 -- TODO may need to update
 {-| List all possible actions and commands in the game -}
 help      :: Command
-help state = (state, " Actions:\n\t go get drop pour examine drink open unlock wear remove apply brush \n\n Commands: \n\t ? inventory quit")
+help state = (state, " Actions:\n\t go get drop pour examine drink open unlock wear remove apply brush \n\n Commands: \n\t ? inventory load save quit")
 
 save::String -> GameData -> IO()
 save path state =do 
