@@ -11,12 +11,31 @@ import System.Console.Haskeline
 import System.Exit
 import Data.Char
 import Data.List
+<<<<<<< Updated upstream:Code/Adventure.hs
 
 import Data.Aeson
 import qualified Data.ByteString.Lazy as B
 import Control.Monad.IO.Class
+=======
+<<<<<<< HEAD:src/Adventure.hs
+import Data.DeriveTH
+
+<<<<<<< HEAD:Code/Adventure.hs
+=======
+
+import Data.Aeson
+import qualified Data.ByteString.Lazy as B
+import Control.Monad.IO.Class
+>>>>>>> 588b8c0910e66890703fce90a422abd035d707fa:Code/Adventure.hs
+=======
+import Data.Aeson
+import qualified Data.ByteString.Lazy as B
+import Control.Monad.IO.Class
+>>>>>>> 588b8c0910e66890703fce90a422abd035d707fa:src/Adventure.hs
+>>>>>>> Stashed changes:src/Adventure.hs
 
 import Test.QuickCheck
+import Test.QuickCheck.All
 
 winmessage = "Congratulations, you have made it outside.\n"
 
@@ -93,6 +112,11 @@ save path state = do json <- liftIO (B.writeFile path (encode state))
 | (_) | || | / _| / / (__| ' \/ -_) _| / /   | |/ -_|_-<  _(_-<
  \__\_\\_,_|_\__|_\_\\___|_||_\___\__|_\_\   |_|\___/__/\__/__/
 -}
+
+
+
+
+-----------------------------------------------------------------------------
 prop_fuzz  :: Char -> Bool
 prop_fuzz x = (x == x) || (x == '▒')
               where fuzzed = fuzz x
@@ -212,6 +236,43 @@ prop_GoUnchanged1 dir gm = (checkUnlock gm newState') && (checkBrush gm newState
 
                             where newState' = fst (go dir gm)
 ---------------------------------------------------------------------------
+prop_remove :: Object -> GameData -> Bool
+prop_remove obj gm |obj == mask    = not (checkMask gm newState')
+                   |obj == glasses = not (checkBlind gm newState')
+                   |otherwise      = checkBlind gm newState' && checkMask gm newState'
+                                     
+                            where newState' = (fst (remove obj gm))
+prop_removetoInv :: Object -> GameData -> Bool
+prop_removetoInv obj gm| elem obj (inventory gm)          =(length (inventory gm) - 1) == length (inventory (fst (remove obj gm))) 
+                       | elem obj (inventory gm) == False = length (inventory gm) == length (inventory (fst (put obj gm)))
+                       | otherwise                        = False
+
+prop_removeStr :: Object -> GameData -> Bool
+prop_removeStr obj gm| elem obj (inventory gm)          = snd (remove obj gm) == "You're not carrying that at the moment"
+                     | elem obj (inventory gm) == False = snd (put obj gm) == "No such item"
+                     | otherwise                        = False
+
+prop_removeUnchanged1 :: Object -> GameData -> Bool
+prop_removeUnchanged1 obj gm |obj == mask    = (checkBlind gm newState') && checks
+                             |obj == glasses = (checkMask gm newState') && checks
+                             |otherwise      = (checkMask gm newState') && (checkBlind gm newState') && checks
+                                     
+                            where  checks = (checkUnlock gm newState') && (checkBrush gm newState') && (checkCaf gm newState') && (checkApplied gm newState')
+                                    && (checkMask gm newState') && (checkPour gm newState') && (checkFinish gm newState') && (checkInv gm newState')
+                                          && (checkLoc gm newState') && (checkWorld gm newState')
+                                   newState' = (fst (remove obj gm))
+
+
+instance Arbitrary Object where
+       arbitrary = oneof[return mug,return coffeepot,return key,return mask,return glasses,return toothbrush,return toothpaste]
+
+instance Arbitrary Room where
+       arbitrary = oneof[return bedroom,return kitchen,return hall,return lounge,return porch,return street,return bathroom]
+
+instance Arbitrary Direction' where
+       arbitrary = oneof[return North,return South,return East,return West,return Outside,return Inside]
+                                   
+----------------------------------------------------------------------------
 checkUnlock:: GameData-> GameData -> Bool
 checkUnlock gm1 gm2 = unlocked gm1 == unlocked gm2
 
