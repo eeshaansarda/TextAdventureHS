@@ -133,66 +133,68 @@ prop_AddObjExit item room = length (exits room) == length (exits (addObject item
 prop_AddInv :: GameData ->Object -> Bool
 prop_AddInv gm obj = length (inventory gm) + 1 == length (inventory (addInv gm obj))
 
-prop_AddInvLocId :: GameData ->Object -> Bool
-prop_AddInvLocId gm obj = location_id gm == location_id (addInv gm obj)
-
-prop_AddInvWorld :: GameData ->Object -> Bool
-prop_AddInvWorld gm obj = length (world gm) == length (world (addInv gm obj))
-
-prop_AddInvPour :: GameData ->Object -> Bool
-prop_AddInvPour gm obj = poured gm == poured (addInv gm obj)
-
-prop_AddInvCaf :: GameData ->Object -> Bool
-prop_AddInvCaf gm obj = caffeinated gm == caffeinated (addInv gm obj)
-
-prop_AddInvBlind :: GameData ->Object -> Bool
-prop_AddInvBlind gm obj = blind gm == blind (addInv gm obj)
-
-prop_AddInvFinish :: GameData ->Object -> Bool
-prop_AddInvFinish gm obj = finished gm == finished (addInv gm obj)
-
-prop_AddInvMask :: GameData ->Object -> Bool
-prop_AddInvMask gm obj = masked gm == masked (addInv gm obj)
-
-prop_AddInvApplied :: GameData ->Object -> Bool
-prop_AddInvApplied gm obj = pasteApplied gm == pasteApplied (addInv gm obj)
-
-prop_AddInvUnlock :: GameData ->Object -> Bool
-prop_AddInvUnlock gm obj = unlocked gm == unlocked (addInv gm obj)
-
-prop_AddInvBrush :: GameData ->Object -> Bool
-prop_AddInvBrush gm obj = brushed gm == brushed (addInv gm obj)
+prop_AddInvUnchanged1 :: Object -> GameData -> Bool
+prop_AddInvUnchanged1 obj gm = (checkUnlock gm newState') && (checkBrush gm newState') && (checkCaf gm newState') && (checkApplied gm newState')
+                                    && (checkMask gm newState') && (checkPour gm newState') && (checkFinish gm newState') && (checkBlind gm newState')
+                                          && (checkLoc gm newState') && (checkWorld gm newState')
+                                     
+                            where newState' = addInv gm obj
 
 -----------------------------------------------------------------
 prop_removeInv :: GameData ->Object -> Bool
 prop_removeInv gm obj = length (inventory gm) - 1 == length (inventory (removeInv gm obj))
 
-prop_removeInvLocId :: GameData ->Object -> Bool
-prop_removeInvLocId gm obj = location_id gm == location_id (removeInv gm obj)
+prop_RemoveInvUnchanged1 :: Object -> GameData -> Bool
+prop_RemoveInvUnchanged1 obj gm = (checkUnlock gm newState') && (checkBrush gm newState') && (checkCaf gm newState') && (checkApplied gm newState')
+                                    && (checkMask gm newState') && (checkPour gm newState') && (checkFinish gm newState') && (checkBlind gm newState')
+                                          && (checkLoc gm newState') && (checkWorld gm newState')
+                                     
+                            where newState' = removeInv gm obj
 
-prop_removeInvWorld :: GameData ->Object -> Bool
-prop_removeInvWorld gm obj = length (world gm) == length (world (removeInv gm obj))
 
-prop_removeInvPour :: GameData ->Object -> Bool
-prop_removeInvPour gm obj = poured gm == poured (removeInv gm obj)
+------------------------------------------------------------------------
+--not sure**********
+prop_Get :: Object -> GameData -> Bool
+prop_Get obj gm| elem obj (objects (getRoomData gm))          = 
+                            length (inventory gm) + 1 == length (inventory (fst (get obj gm))) -- onject has been added to inv
+               | elem obj (objects (getRoomData gm)) == False =
+                            length (inventory gm) == length (inventory (fst (get obj gm)))
+               | otherwise                                    = False
 
-prop_removeInvCaf :: GameData ->Object -> Bool
-prop_removeInvCaf gm obj = caffeinated gm == caffeinated (removeInv gm obj)
+prop_GetUnchanged1 :: Object -> GameData -> Bool
+prop_GetUnchanged1 obj gm = (checkUnlock gm newState') && (checkBrush gm newState') && (checkCaf gm newState') && (checkApplied gm newState')
+                                    && (checkMask gm newState') && (checkPour gm newState') && (checkFinish gm newState') && (checkBlind gm newState')
+                                          && (checkLoc gm newState') && (checkWorld gm newState')
+                                     
+                            where newState' = (fst (get obj gm))
+                            
+---------------------------------------------------------------------------
+checkUnlock:: GameData-> GameData -> Bool
+checkUnlock gm1 gm2 = unlocked gm1 == unlocked gm2
 
-prop_removeInvBlind :: GameData ->Object -> Bool
-prop_removeInvBlind gm obj = blind gm == blind (removeInv gm obj)
+checkBrush:: GameData-> GameData -> Bool
+checkBrush gm1 gm2 = brushed gm1 == brushed gm2
 
-prop_removeInvFinish :: GameData ->Object -> Bool
-prop_removeInvFinish gm obj = finished gm == finished (removeInv gm obj)
+checkPour:: GameData->GameData -> Bool
+checkPour gm1 gm2 = poured gm1 == poured gm2
 
-prop_removeInvMask :: GameData ->Object -> Bool
-prop_removeInvMask gm obj = masked gm == masked (removeInv gm obj)
+checkApplied:: GameData->GameData -> Bool
+checkApplied gm1 gm2 = pasteApplied gm1 == pasteApplied gm2
 
-prop_removeInvApplied :: GameData ->Object -> Bool
-prop_removeInvApplied gm obj = pasteApplied gm == pasteApplied (removeInv gm obj)
+checkFinish:: GameData->GameData -> Bool
+checkFinish gm1 gm2 = finished gm1 == finished gm2
 
-prop_removeInvUnlock :: GameData ->Object -> Bool
-prop_removeInvUnlock gm obj = unlocked gm == unlocked (removeInv gm obj)
+checkBlind:: GameData->GameData -> Bool
+checkBlind gm1 gm2 = blind gm1 == blind gm2
 
-prop_removeInvBrush :: GameData ->Object -> Bool
-prop_removeInvBrush gm obj = brushed gm == brushed (removeInv gm obj)
+checkCaf:: GameData->GameData -> Bool
+checkCaf gm1 gm2 = caffeinated gm1 == caffeinated gm2
+
+checkLoc:: GameData->GameData -> Bool
+checkLoc gm1 gm2 = location_id gm1 == location_id gm2
+
+checkMask:: GameData->GameData -> Bool
+checkMask gm1 gm2 = masked gm1 == masked gm2
+
+checkWorld :: GameData->GameData -> Bool
+checkWorld gm1 gm2 = length (world gm1) == length (world gm2) 
