@@ -39,7 +39,7 @@ The final extra puzzle requires the player to wear a **mask** before they can le
 
 
 ## Evaluation & Known Bugs
-
+* The `save` and `load` commands bypass the parser and are handled directly in the main game loop. This is a good thing as it means that the `process` function doesn't need to worry about IO, but adds a bit of complication since commands are handled in more than one place and the game loop has some more layers. With more time, this could be restructured.
 
 
 ## Conclusion
