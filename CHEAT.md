@@ -7,22 +7,21 @@ Don't worry. Here's how to do it.
 
 1. get glasses
 2. wear glasses
-3. go west
-4. get toothbrush
-5. get toothpaste
-6. apply toothpaste
-7. brush teeth
-8. go east
-9. go north
-10. get coffee
-11. pour coffee
-12. drink coffee
-13. go west
-14. go south
-15. get key
-16. go north
-17. unlock door
-18. open door
-19. wear mask
-20. open door
-21. go out
+3. get mug
+4. go west
+5. get toothbrush
+6. get toothpaste
+7. apply toothpaste
+8. brush teeth
+9. go east then go north
+10. get coffee and pour coffee
+11. drink coffee
+12. go west then go south
+13. get key
+14. go north
+15. unlock door
+16. open door
+17. go outside
+18. wear mask
+19. open door
+20. go outside
