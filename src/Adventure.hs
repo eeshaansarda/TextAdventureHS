@@ -161,6 +161,11 @@ prop_Get obj gm| elem obj (objects (getRoomData gm))          =
                             length (inventory gm) == length (inventory (fst (get obj gm)))
                | otherwise                                    = False
 
+prop_GetStr :: Object -> GameData -> Bool
+prop_GetStr obj gm| elem obj (objects (getRoomData gm))          = snd (put obj gm) == (obj_name obj) ++ " is put in inventory"
+                  | elem obj (objects (getRoomData gm)) == False = snd (put obj gm) == "No such object here"
+                  | otherwise                                    = False
+
 prop_GetUnchanged1 :: Object -> GameData -> Bool
 prop_GetUnchanged1 obj gm = (checkUnlock gm newState') && (checkBrush gm newState') && (checkCaf gm newState') && (checkApplied gm newState')
                                     && (checkMask gm newState') && (checkPour gm newState') && (checkFinish gm newState') && (checkBlind gm newState')
@@ -168,6 +173,24 @@ prop_GetUnchanged1 obj gm = (checkUnlock gm newState') && (checkBrush gm newStat
                                      
                             where newState' = (fst (get obj gm))
                             
+---------------------------------------------------------------------------
+--not sure**********
+prop_Put :: Object -> GameData -> Bool
+prop_Put obj gm| elem obj (inventory gm)          =(length (inventory gm) - 1) == length (inventory (fst (put obj gm))) 
+               | elem obj (inventory gm) == False = length (inventory gm) == length (inventory (fst (put obj gm)))
+               | otherwise                        = False
+
+prop_PutStr :: Object -> GameData -> Bool
+prop_PutStr obj gm| elem obj (inventory gm)          = snd (put obj gm) == (obj_name obj) ++ " has been dropped"
+                  | elem obj (inventory gm) == False = snd (put obj gm) == "No such item"
+                  | otherwise                        = False
+
+prop_PutUnchanged1 :: Object -> GameData -> Bool
+prop_PutUnchanged1 obj gm = (checkUnlock gm newState') && (checkBrush gm newState') && (checkCaf gm newState') && (checkApplied gm newState')
+                                    && (checkMask gm newState') && (checkPour gm newState') && (checkFinish gm newState') && (checkBlind gm newState')
+                                          && (checkLoc gm newState') && (checkWorld gm newState')
+                                     
+                            where newState' = (fst (put obj gm))
 ---------------------------------------------------------------------------
 checkUnlock:: GameData-> GameData -> Bool
 checkUnlock gm1 gm2 = unlocked gm1 == unlocked gm2
