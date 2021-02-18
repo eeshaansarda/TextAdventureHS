@@ -16,6 +16,7 @@ This project is an implementation of a simple text adventure, as laid out the [p
     * You need to put your mask on before you can leave the porch.
 * Object, direction, and command strings have been replaced by dedicated data types.
 * The input is accepted using Haskeline (including history and tab completion), and processed using `Parsing.hs`.
+* The parser accepts two commands at the same time, separated by "and" or "then".
 
 In terms of team organisation, we had regular meetings to pick out new tasks and targets, which were then added to Microsoft Planner to keep track of progress. Between meetings, people would assign tasks to themselves and complete them, and intermediate progress reports could be added to the task in Planner to further break down the work if needed, or avoid two people doing the same thing. The provided submission is a Git repository, so precise breakdown of lines of code written can be found by running `git log` or `git blame` (note though that commit identities have not been anonymised -- they contain names and email addresses instead of matriculation numbers).
 
@@ -33,6 +34,7 @@ Another additional puzzle involves the player needing a **key** to unlock and op
 
 The final extra puzzle requires the player to wear a **mask** before they can leave another new room, the **porch**. The mask starts hidden in the player's inventory, instead of in a room. To add some realism to the game, the player can't drink coffee while their mask is on.
 
+We switched to using `Parsing.hs` to parse user input. The system also accepts two commands at once, split by "and" or "then".
 
 ## Testing
 
