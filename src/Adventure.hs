@@ -162,3 +162,37 @@ prop_AddInvUnlock gm obj = unlocked gm == unlocked (addInv gm obj)
 
 prop_AddInvBrush :: GameData ->Object -> Bool
 prop_AddInvBrush gm obj = brushed gm == brushed (addInv gm obj)
+
+-----------------------------------------------------------------
+prop_removeInv :: GameData ->Object -> Bool
+prop_removeInv gm obj = length (inventory gm) - 1 == length (inventory (removeInv gm obj))
+
+prop_removeInvLocId :: GameData ->Object -> Bool
+prop_removeInvLocId gm obj = location_id gm == location_id (removeInv gm obj)
+
+prop_removeInvWorld :: GameData ->Object -> Bool
+prop_removeInvWorld gm obj = length (world gm) == length (world (removeInv gm obj))
+
+prop_removeInvPour :: GameData ->Object -> Bool
+prop_removeInvPour gm obj = poured gm == poured (removeInv gm obj)
+
+prop_removeInvCaf :: GameData ->Object -> Bool
+prop_removeInvCaf gm obj = caffeinated gm == caffeinated (removeInv gm obj)
+
+prop_removeInvBlind :: GameData ->Object -> Bool
+prop_removeInvBlind gm obj = blind gm == blind (removeInv gm obj)
+
+prop_removeInvFinish :: GameData ->Object -> Bool
+prop_removeInvFinish gm obj = finished gm == finished (removeInv gm obj)
+
+prop_removeInvMask :: GameData ->Object -> Bool
+prop_removeInvMask gm obj = masked gm == masked (removeInv gm obj)
+
+prop_removeInvApplied :: GameData ->Object -> Bool
+prop_removeInvApplied gm obj = pasteApplied gm == pasteApplied (removeInv gm obj)
+
+prop_removeInvUnlock :: GameData ->Object -> Bool
+prop_removeInvUnlock gm obj = unlocked gm == unlocked (removeInv gm obj)
+
+prop_removeInvBrush :: GameData ->Object -> Bool
+prop_removeInvBrush gm obj = brushed gm == brushed (removeInv gm obj)
