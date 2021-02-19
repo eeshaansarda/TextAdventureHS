@@ -1,41 +1,36 @@
 {-# LANGUAGE DeriveGeneric #-}
 module DataDecl where
 
-
 import GHC.Generics
--- Data Declaration -------------------------------------------
 
+-- Data Declaration -------------------------------------------
 
 data Command' = Quit | Inventory | Help
    deriving Show
---x---------------------x------------------x--
+-------------------------------------------
 data Direction' = North | East | South | West | Inside | Outside
    deriving (Eq,Generic)
---x---------------------x------------------x--
+-------------------------------------------
 data Action' = Go Direction' | Get DataDecl.Object | Put DataDecl.Object | Pour DataDecl.Object
              | Examine DataDecl.Object | Drink DataDecl.Object | Open String| Wear DataDecl.Object
              | Remove DataDecl.Object | Unlock String | Apply DataDecl.Object | Brush String
    deriving Show
---x---------------------x------------------x--
-
+-------------------------------------------
 data Object = Obj { obj_name :: String,
                     obj_longname :: String,
                     obj_desc :: String }
    deriving (Eq,Generic)
---x---------------------x------------------x--
-
+-------------------------------------------
 data Exit = Exit { exit_dir :: Direction',
                    exit_desc :: String,
                    room :: String } 
    deriving (Eq,Generic)
---x---------------------x------------------x--
-
+-------------------------------------------
 data Room = Room { room_desc :: String,
                    exits :: [Exit],
                    objects :: [DataDecl.Object] }
    deriving (Eq,Generic)
---x---------------------x------------------x--
-
+-------------------------------------------
 data GameData = GameData { location_id :: String, -- where player is
                            world :: [(String, Room)],
                            inventory :: [DataDecl.Object], -- objects player has
@@ -51,6 +46,7 @@ data GameData = GameData { location_id :: String, -- where player is
 ------------------------------------------------------------------
 
 -- Show ---------------------------------------------------------
+-- for testing purposes
 instance Show DataDecl.Object where
    show obj = obj_longname obj
 
@@ -80,12 +76,13 @@ getRoomData :: GameData -> Room
 getRoomData gd = maybe undefined id (lookup (location_id gd) (world gd))
 
 ------------------------------------------------------------------
+-- Function types
 
--- Things which do something to an object and update the game state
+-- actions
 type Action    = String -> GameData -> (GameData, String)
 type ActionDir = Direction' -> GameData -> (GameData, String)
 type ActionObj = DataDecl.Object -> GameData -> (GameData, String)
 
--- Things which just update the game state
+-- commands
 type Command = GameData -> (GameData, String)
 ------------------------------------------------------------------
