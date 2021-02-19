@@ -37,20 +37,20 @@ addObject o rm = rm { objects = o : objects rm }
 
 {-
 
-They are not useful when using data
+findObj and objectData are not useful when using data structures instead of strings.
 
--- Or just use a function that returns boolean to check first
 {- | Given an object id and a list of objects, return the object data. Note
      that you can assume the object is in the list (i.e. that you have
      checked with 'objectHere') -}
 findObj     :: String -> [DataDecl.Object] -> DataDecl.Object
 findObj o ds = head (filter (\x -> obj_name x == o) ds) -- used head as the list will never be empty
---               where search id obj | obj_name obj == id  = True
---                                   | otherwise           = False
+               where search id obj | obj_name obj == id  = True
+                                   | otherwise           = False
 
 {- | Use 'findObj' to find an object in a room description -}
 objectData     :: String -> Room -> DataDecl.Object
 objectData o rm = findObj o (objects rm)
+
 -}
 
 {- | Given a game state and a room id, replace the old room information with
@@ -276,7 +276,6 @@ inv state = (state, showInv (inventory state))
 quit      :: Command
 quit state = (state { finished = True }, "Bye bye")
 
--- TODO may need to update
 {-| List all possible actions and commands in the game -}
 help      :: Command
 help state = (state, " Actions:\n\t go get drop pour examine drink open unlock wear remove apply brush \n\n Commands: \n\t ? inventory load save quit")

@@ -73,8 +73,9 @@ loop state  = do putStrLnFuzzy state (show state)
                  case input of
                       Nothing  -> loop state
                       Just cmd -> control state cmd
-                              
+
 --https://www.reddit.com/r/haskell/comments/3wjddo/can_someone_help_me_with_aeson/
+{-| Load a game state from the JSON file at the specified path. -}
 load :: String-> GameData-> InputT IO()
 load path state = do lState <- liftIO (decode <$> B.readFile ("saved/" ++ path))
                      case lState :: Maybe GameData of
@@ -82,7 +83,7 @@ load path state = do lState <- liftIO (decode <$> B.readFile ("saved/" ++ path))
                                             loop state
                           Just lState -> loop lState
 
-
+{-| Save the game state to a JSON file at the specified path. -}
 save :: String -> GameData -> InputT IO()
 save path state = do json <- liftIO (B.writeFile ("saved/" ++ path) (encode state))
                      outputStrLn "Saved!"
@@ -144,12 +145,6 @@ prop_AddObjDesc item room = room_desc room == room_desc (addObject item room)
 prop_AddObjExit :: DataDecl.Object -> Room -> Bool
 prop_AddObjExit item room = length (exits room) == length (exits (addObject item room))
 ----------------------------------------------------------------------------------
-
--- prop_findObj         :: String -> [DataDecl.Object] -> Bool
--- prop_findObj obj objs | elem obj [x | y <- objs, x <- [obj_name y]] = obj_name (findObj obj objs) == obj
-                      -- | otherwise                                   = True
-                          
-----------------------------------------------------------------------------
 prop_move :: Direction' -> Room -> Bool
 prop_move dir room | elem dir [x | y <- (exits room), x <- [exit_dir y]] = case move dir room of
                                                                                 Just a -> True
@@ -157,7 +152,12 @@ prop_move dir room | elem dir [x | y <- (exits room), x <- [exit_dir y]] = case 
                    | otherwise                                           = move dir room == Nothing
 ----------------------------------------------------------------------------
 {-
-*************The following Tests have been commented out as QuickTests were not deemed apt for them
+
+prop_findObj         :: String -> [DataDecl.Object] -> Bool
+prop_findObj obj objs | elem obj [x | y <- objs, x <- [obj_name y]] = obj_name (findObj obj objs) == obj
+                      | otherwise                                   = True
+                          
+*************The following Tests have been commented out as QuickCheck tests were not deemed apt for them
 ----------------------------------------------------------------------------------------
 prop_AddInv :: GameData -> DataDecl.Object -> Bool
 prop_AddInv gm obj = length (inventory gm) + 1 == length (inventory (addInv gm obj))
@@ -232,8 +232,6 @@ prop_PutUnchanged1 obj gm = (checkUnlock gm newState') && (checkBrush gm newStat
                                           && (checkLoc gm newState') && (checkWorld gm newState')
                             where newState' = (fst (put obj gm))
 ---------------------------------------------------------------------------
---not sure*******
-
 prop_Go :: Direction' -> GameData -> Bool
 prop_Go dir gm | validDir && (snd result == "Moved") && (location_id (fst result) /= location_id gm)                  = True
                | (not validDir) && (snd result == "Unknown location") && (location_id (fst result) == location_id gm) = True
