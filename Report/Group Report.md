@@ -512,5 +512,38 @@ Congratulations, you have made it outside.
 
 ```
 
+### Save
+```
+You a▒e i▒ you▒ ▒e▒▒oom.
+▒o ▒▒e ▒o▒▒▒ is a ki▒c▒e▒. ▒o ▒▒e wes▒ is a ▒a▒▒▒oom. 
+
+You ca▒ see: a ▒ai▒ o▒ g▒asses, a co▒▒ee mug
+What now? get glasses then wear glasses
+
+g▒asses is ▒u▒ i▒ i▒▒e▒▒o▒y
+Wow!
+
+You are in your bedroom.
+To the north is a kitchen. To the west is a bathroom. 
+
+You can see: a coffee mug
+What now? save wore-glasses.s
+Saved!
+```
+
+### Load
+```
+You a▒e i▒ you▒ ▒e▒▒oom.
+▒o ▒▒e ▒o▒▒▒ is a ki▒c▒e▒. ▒o ▒▒e wes▒ is a ▒a▒▒▒oom. 
+
+You ca▒ see: a ▒ai▒ o▒ g▒asses, a co▒▒ee mug
+What now? load wore-glasses.s
+You are in your bedroom.
+To the north is a kitchen. To the west is a bathroom. 
+
+You can see: a coffee mug
+What now? 
+```
+
 ## Evaluation & Known Bugs
 * The `save` and `load` commands bypass the parser and are handled directly in the main game loop. This is a good thing as it means that the `process` function doesn't need to worry about IO, but adds a bit of complication since commands are handled in more than one place and the game loop has some more layers. With more time, this could be restructured.
