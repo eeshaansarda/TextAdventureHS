@@ -42,21 +42,14 @@ The final extra puzzle requires the player to wear a **mask** before they can le
 ###Load/Save
 We have decided to implement `save` and `load` by using Aeson library for JSON. When saving, the GameData is turned into a JSON string and stored in a file of the player's choice, using `writeFile`. When loading, the JSON string is  read from the file of the user's choice, and converted to GameData. Initialy, we thought of utilising the `show` and `read` functions to convert the GameData to String object. But we decided against this, as `Show` already had an instance in the program and we did not want to manipulate that any further. Also, the choice of external library to use JSON was further motivated by the fact that the solution will be a lot simpler and easier to read.
 
-<<<<<<< Updated upstream
+### QuickCheck
 We have implemented several **QuickCheck** tests. We decided against writing any QuickCheck tests for `ActionDir`, `ActionObj` and `Command` types. This choice was made due to the fact that the functions of these types require a `GameData` type as input. Randomly generating GameData variables did not see like the most efficent way to test these functions. Instead, we thought of just using `initState` as the `GameData` and randomly generate the other variables need for testing the function. We also decided against doing this as manual inputting all the possible input, in each game state, was a lot more suitable in testing these functions. Hence, we have tested functions of these types manually covering all the inputs.
-=======
-<<<<<<< HEAD
-We have implemented several QuickTests. We decided agiast writing any QuickTest for **ActionDir**,**ActionObj** and **Command** types. This choice was made due to the fact that the functions of these types require a **GameData** type as input. Randomly generating GameData variables did not seem like the most effective way to test these functions. Instead, we thought of just using **initState** as the GameData and randomly generate the other variables need for testing the function. We aslo decided against doing this as manual inputting all the possible input, in each game state, was a lot more suitable in testing these function. Hence, we have tested functions of these types manually covering all the inputs.
-=======
-We have implemented several **QuickCheck** tests. We decided against writing any QuickCheck tests for `ActionDir`, `ActionObj` and `Command` types. This choice was made due to the fact that the functions of these types require a `GameData` type as input. Randomly generating GameData variables did not see like the most efficent way to test these functions. Instead, we thought of just using `initState` as the `GameData` and randomly generate the other variables need for testing the function. We also decided against doing this as manual inputting all the possible input, in each game state, was a lot more suitable in testing these functions. Hence, we have tested functions of these types manually covering all the inputs.
->>>>>>> 97fdf1b6baa9bcdf4b7c8dda67e0cab62dcb5d44
->>>>>>> Stashed changes
 
+### Parsing
 We switched to using `Parsing.hs` and extended it to `WorldParser.hs` to parse user input. The `process` function was shifted here (it seemed like it belonged here). Here, there are `Parser` functions for `Command', Action', Direction', Object`. With each `Parser` function, there is a function which takes in a String and returns a `Maybe` data. Here, we decided to not take `Object` argument for all `Action'` constructors, because it didn't make sense to make a "teeth" object, and since `Go` had to have a `Direction'` argument while the others had to be `Object`. This made us make different functions to "help" the `Action'` parser. The system also accepts two commands at once, split by "and" or "then". This is implemented by a `Parser` function that returns a `(Action', Action')`. A late idea was to make a function that would return `[Action']` and modify the process function to execute all of them. Using the output state as input state for the next command and storing all the output string in a list to be displayed together.
 
 ## Testing
-###Drinking Coffee with mask on
-```What now? get coffee
+## Testing
 
 ### Clean run
 ```
@@ -64,38 +57,6 @@ We switched to using `Parsing.hs` and extended it to `WorldParser.hs` to parse u
 You a▒e i▒ you▒ ▒e▒▒oom.
 ▒o ▒▒e ▒o▒▒▒ is a ki▒c▒e▒. ▒o ▒▒e wes▒ is a ▒a▒▒▒oom. 
 
-<<<<<<< Updated upstream
-=======
-<<<<<<< HEAD
-coffee is put in inventory
-
-You are in the kitchen.
-To the south is your bedroom. To the west is a hallway.
-What now? pour coffee
-
-
-Coffee Poured
-
-You are in the kitchen.
-To the south is your bedroom. To the west is a hallway.
-What now? wear mask  
-
-
-Mask worn
-
-You are in the kitchen.
-To the south is your bedroom. To the west is a hallway.
-What now? drink coffee
-
-
-Remove your mask to drink
-
-You are in the kitchen.
-To the south is your bedroom. To the west is a hallway.
-What now? ```
-
-=======
->>>>>>> Stashed changes
 You ca▒ see: a ▒ai▒ o▒ g▒asses, a co▒▒ee mug
 What now? get glasses then wear glasses
 
@@ -589,7 +550,8 @@ What now?
 ```
 
 ### Drinking coffee with mask on
-```What now? get coffee
+```
+What now? get coffee
 
 
 coffee is put in inventory
@@ -617,11 +579,8 @@ Remove your mask to drink
 
 You are in the kitchen.
 To the south is your bedroom. To the west is a hallway.
-What now?```
-<<<<<<< Updated upstream
-=======
->>>>>>> 97fdf1b6baa9bcdf4b7c8dda67e0cab62dcb5d44
->>>>>>> Stashed changes
+What now?
+```
 
 ## Evaluation & Known Bugs
 * The `save` and `load` commands bypass the parser and are handled directly in the main game loop. This is a good thing as it means that the `process` function doesn't need to worry about IO, but adds a bit of complication since commands are handled in more than one place and the game loop has some more layers. With more time, this could be restructured.
