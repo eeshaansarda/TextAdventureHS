@@ -47,8 +47,7 @@ We switched to using `Parsing.hs` and extended it to `WorldParser.hs` to parse u
 
 ## Testing
 
-* Test runs
-** Clean run
+### Clean run
 ```
 *Main> main
 You a▒e i▒ you▒ ▒e▒▒oom.
