@@ -181,7 +181,336 @@ Moved
 Congratulations, you have made it outside.
 ```
 
+### Not so clean run
+```
+You a▒e i▒ you▒ ▒e▒▒oom.
+▒o ▒▒e ▒o▒▒▒ is a ki▒c▒e▒. ▒o ▒▒e wes▒ is a ▒a▒▒▒oom. 
 
+You ca▒ see: a ▒ai▒ o▒ g▒asses, a co▒▒ee mug
+What now? go west
+
+Mo▒e▒
+
+You a▒e i▒ ▒▒e ▒a▒▒▒oom.
+▒o ▒▒e eas▒ is you▒ ▒e▒▒oom. 
+
+You ca▒ see: a ▒oo▒▒▒▒us▒, ▒oo▒▒▒as▒e
+What now? go east
+
+Mo▒e▒
+
+You a▒e i▒ you▒ ▒e▒▒oom.
+▒o ▒▒e ▒o▒▒▒ is a ki▒c▒e▒. ▒o ▒▒e wes▒ is a ▒a▒▒▒oom. 
+
+You ca▒ see: a ▒ai▒ o▒ g▒asses, a co▒▒ee mug
+What now? get glasses and wear glasses
+
+g▒asses is ▒u▒ i▒ i▒▒e▒▒o▒y
+Wow!
+
+You are in your bedroom.
+To the north is a kitchen. To the west is a bathroom. 
+
+You can see: a coffee mug
+What now? go north
+
+Moved
+
+You are in the kitchen.
+To the south is your bedroom. To the west is a hallway. 
+
+You can see: a pot of coffee
+What now? get coffee
+
+coffee is put in inventory
+
+You are in the kitchen.
+To the south is your bedroom. To the west is a hallway. 
+What now? co south
+
+I don't understand
+
+You are in the kitchen.
+To the south is your bedroom. To the west is a hallway. 
+What now? go south
+
+Moved
+
+You are in your bedroom.
+To the north is a kitchen. To the west is a bathroom. 
+
+You can see: a coffee mug
+What now? ?
+
+ Actions:
+         go get drop pour examine drink open unlock wear remove apply brush 
+
+ Commands: 
+         ? inventory load save quit
+
+You are in your bedroom.
+To the north is a kitchen. To the west is a bathroom. 
+
+You can see: a coffee mug
+What now? get mug
+
+mug is put in inventory
+
+You are in your bedroom.
+To the north is a kitchen. To the west is a bathroom. 
+What now? pour coffee
+
+Coffee Poured
+
+You are in your bedroom.
+To the north is a kitchen. To the west is a bathroom. 
+What now? drink coffee
+
+Brush your teeth before you drink coffee
+
+You are in your bedroom.
+To the north is a kitchen. To the west is a bathroom. 
+What now? drop coffee
+
+coffee has been dropped
+
+You are in your bedroom.
+To the north is a kitchen. To the west is a bathroom. 
+
+You can see: a pot of coffee
+What now? go west
+
+Moved
+
+You are in the bathroom.
+To the east is your bedroom. 
+
+You can see: a toothbrush, toothpaste
+What now? brush teeth
+
+Please attain toothbrush and paste
+
+You are in the bathroom.
+To the east is your bedroom. 
+
+You can see: a toothbrush, toothpaste
+What now? get toothbrush
+
+toothbrush is put in inventory
+
+You are in the bathroom.
+To the east is your bedroom. 
+
+You can see: toothpaste
+What now? brush teeth
+
+Please attain toothbrush and paste
+
+You are in the bathroom.
+To the east is your bedroom. 
+
+You can see: toothpaste
+What now? get toothpaste
+
+toothpaste is put in inventory
+
+You are in the bathroom.
+To the east is your bedroom. 
+What now? brush teeth
+
+Please apply "toothpaste" to the brush
+
+You are in the bathroom.
+To the east is your bedroom. 
+What now? apply toothpaste
+
+Toothpaste applied to brush
+
+You are in the bathroom.
+To the east is your bedroom. 
+What now? brush teeth
+
+Your teeth are shining
+
+You are in the bathroom.
+To the east is your bedroom. 
+What now? drop toothbrush and drop toothpaste
+
+toothbrush has been dropped
+toothpaste has been dropped
+
+You are in the bathroom.
+To the east is your bedroom. 
+
+You can see: toothpaste, a toothbrush
+What now? go north
+
+Unknown location
+
+You are in the bathroom.
+To the east is your bedroom. 
+
+You can see: toothpaste, a toothbrush
+What now? go east
+
+Moved
+
+You are in your bedroom.
+To the north is a kitchen. To the west is a bathroom. 
+
+You can see: a pot of coffee
+What now? go north
+
+Moved
+
+You are in the kitchen.
+To the south is your bedroom. To the west is a hallway. 
+What now? go west
+
+Moved
+
+You are in the hallway. The front door is closed. 
+To the east is a kitchen. To the south is a lounge. 
+What now? open door
+
+The door must be unlocked first
+
+You are in the hallway. The front door is closed. 
+To the east is a kitchen. To the south is a lounge. 
+What now? unlock door
+
+Have you lost your key again?
+
+You are in the hallway. The front door is closed. 
+To the east is a kitchen. To the south is a lounge. 
+What now? go south
+
+Moved
+
+You are in the lounge.
+To the north is a hallway. 
+
+You can see: a key
+What now? get key
+
+key is put in inventory
+
+You are in the lounge.
+To the north is a hallway. 
+What now? go north
+
+Moved
+
+You are in the hallway. The front door is closed. 
+To the east is a kitchen. To the south is a lounge. 
+What now? open door
+
+The door must be unlocked first
+
+You are in the hallway. The front door is closed. 
+To the east is a kitchen. To the south is a lounge. 
+What now? unlock door
+
+Unlocked the door
+
+You are in the hallway. The front door is closed. 
+To the east is a kitchen. To the south is a lounge. 
+What now? open door
+
+You need energy
+
+You are in the hallway. The front door is closed. 
+To the east is a kitchen. To the south is a lounge. 
+What now? drink coffee
+
+You feel energized
+
+You are in the hallway. The front door is closed. 
+To the east is a kitchen. To the south is a lounge. 
+What now? drop mug
+
+mug has been dropped
+
+You are in the hallway. The front door is closed. 
+To the east is a kitchen. To the south is a lounge. 
+
+You can see: a coffee mug
+What now? open door
+
+Opened the door
+
+You are in the hallway. The front door is open. 
+To the east is a kitchen. To the south is a lounge. You can go outside. 
+What now? go outside
+
+Moved
+
+You are standing on the porch. The door is closed.
+You can go back inside.
+What now? open door
+
+Don't forget your mask
+
+You are standing on the porch. The door is closed.
+You can go back inside.
+What now? go inside
+
+Moved
+
+You are in the hallway. The front door is open. 
+To the east is a kitchen. To the south is a lounge. You can go outside. 
+What now? inventory
+
+You are carrying:
+a key
+a mask
+You are wearing glasses
+
+You are in the hallway. The front door is open. 
+To the east is a kitchen. To the south is a lounge. You can go outside. 
+What now? wear mask
+
+Mask worn
+
+You are in the hallway. The front door is open. 
+To the east is a kitchen. To the south is a lounge. You can go outside. 
+What now? drop glasses
+
+No such item
+
+You are in the hallway. The front door is open. 
+To the east is a kitchen. To the south is a lounge. You can go outside. 
+What now? remove glasses
+
+Glasses removed and placed in your inventory
+
+You a▒e i▒ ▒▒e ▒a▒▒way. ▒▒e ▒▒o▒▒ ▒oo▒ is o▒e▒. 
+▒o ▒▒e eas▒ is a ki▒c▒e▒. ▒o ▒▒e sou▒▒ is a ▒ou▒ge. You ca▒ go ou▒si▒e. 
+What now? wear glasses
+
+Wow!
+
+You are in the hallway. The front door is open. 
+To the east is a kitchen. To the south is a lounge. You can go outside. 
+What now? go outside
+
+Moved
+
+You are standing on the porch. The door is closed.
+You can go back inside.
+What now? open door
+
+Opened the porch door
+
+You are standing on the porch and wearing your mask.
+You can go back inside. You can go out into the street. 
+What now? go outside
+
+Moved
+
+Congratulations, you have made it outside.
+
+```
 
 ## Evaluation & Known Bugs
 * The `save` and `load` commands bypass the parser and are handled directly in the main game loop. This is a good thing as it means that the `process` function doesn't need to worry about IO, but adds a bit of complication since commands are handled in more than one place and the game loop has some more layers. With more time, this could be restructured.
