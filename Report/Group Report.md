@@ -551,20 +551,17 @@ What now?
 ```
 What now? get coffee
 
-
 coffee is put in inventory
 
 You are in the kitchen.
-To the south is your bedroom. To the west is a hallway.
+To the south is your bedroom. To the west is a hallway. 
 What now? pour coffee
-
 
 Coffee Poured
 
 You are in the kitchen.
 To the south is your bedroom. To the west is a hallway.
-What now? wear mask  
-
+What now? wear mask
 
 Mask worn
 
@@ -572,8 +569,19 @@ You are in the kitchen.
 To the south is your bedroom. To the west is a hallway.
 What now? drink coffee
 
-
 Remove your mask to drink
+
+You are in the kitchen.
+To the south is your bedroom. To the west is a hallway.
+What now? remove mask
+
+Mask removed and placed in your inventory
+
+You are in the kitchen.
+To the south is your bedroom. To the west is a hallway.
+What now? drink coffee
+
+You feel energized
 
 You are in the kitchen.
 To the south is your bedroom. To the west is a hallway.
