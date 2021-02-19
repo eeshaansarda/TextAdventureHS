@@ -39,16 +39,15 @@ Another additional puzzle involves the player needing a **key** to unlock and op
 
 The final extra puzzle requires the player to wear a **mask** before they can leave another new room, the **porch**. The mask starts hidden in the player's inventory, instead of in a room. To add some realism to the game, the player can't drink coffee while their mask is on.
 
-###Load/Save
+###Save and Load
 We have decided to implement `save` and `load` by using Aeson library for JSON. When saving, the GameData is turned into a JSON string and stored in a file of the player's choice, using `writeFile`. When loading, the JSON string is  read from the file of the user's choice, and converted to GameData. Initialy, we thought of utilising the `show` and `read` functions to convert the GameData to String object. But we decided against this, as `Show` already had an instance in the program and we did not want to manipulate that any further. Also, the choice of external library to use JSON was further motivated by the fact that the solution will be a lot simpler and easier to read.
-
-### QuickCheck
-We have implemented several **QuickCheck** tests. We decided against writing any QuickCheck tests for `ActionDir`, `ActionObj` and `Command` types. This choice was made due to the fact that the functions of these types require a `GameData` type as input. Randomly generating GameData variables did not see like the most efficent way to test these functions. Instead, we thought of just using `initState` as the `GameData` and randomly generate the other variables need for testing the function. We also decided against doing this as manual inputting all the possible input, in each game state, was a lot more suitable in testing these functions. Hence, we have tested functions of these types manually covering all the inputs.
 
 ### Parsing
 We switched to using `Parsing.hs` and extended it to `WorldParser.hs` to parse user input. The `process` function was shifted here (it seemed like it belonged here). Here, there are `Parser` functions for `Command', Action', Direction', Object`. With each `Parser` function, there is a function which takes in a String and returns a `Maybe` data. Here, we decided to not take `Object` argument for all `Action'` constructors, because it didn't make sense to make a "teeth" object, and since `Go` had to have a `Direction'` argument while the others had to be `Object`. This made us make different functions to "help" the `Action'` parser. The system also accepts two commands at once, split by "and" or "then". This is implemented by a `Parser` function that returns a `(Action', Action')`. A late idea was to make a function that would return `[Action']` and modify the process function to execute all of them. Using the output state as input state for the next command and storing all the output string in a list to be displayed together.
 
 ## Testing
+###QuickCheck
+We have implemented several **QuickCheck** tests. We decided against writing any QuickCheck tests for `ActionDir`, `ActionObj` and `Command` types. This choice was made due to the fact that the functions of these types require a `GameData` type as input. Randomly generating GameData variables did not see like the most efficent way to test these functions. Instead, we thought of just using `initState` as the `GameData` and randomly generate the other variables need for testing the function. We also decided against doing this as manual inputting all the possible input, in each game state, was a lot more suitable in testing these functions. Hence, we have tested functions of these types manually covering all the inputs.
 ## Testing
 
 ### Clean run
@@ -594,4 +593,3 @@ What now?
 ## Conclusion
 
 The game meets the project specification fully, including implementation of all additional requirements up to Hard. It is well documented, so a player can get started quickly, and is written using idiomatic Haskell. With more time, the program could be improved through better error handling.
-
