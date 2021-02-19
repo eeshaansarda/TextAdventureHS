@@ -60,7 +60,7 @@ control :: GameData -> String -> InputT IO ()
 control state cmd | isPrefixOf "load " cmd = load (drop 5 cmd) state
                   | isPrefixOf "save " cmd = save (drop 5 cmd) state
                   | otherwise              = do let (state', msg) = process state cmd
-                                                putStrLnFuzzy state ("\n\n" ++ msg ++ "\n")
+                                                putStrLnFuzzy state ("\n" ++ msg ++ "\n")
                                                 if (won state') then do outputStrLn winmessage
                                                                         return ()
                                                 else if (finished state') then return ()

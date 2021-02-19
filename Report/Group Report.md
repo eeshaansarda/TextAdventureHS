@@ -47,10 +47,142 @@ We switched to using `Parsing.hs` and extended it to `WorldParser.hs` to parse u
 
 ## Testing
 
+* Test runs
+** Clean run
+```
+*Main> main
+You a▒e i▒ you▒ ▒e▒▒oom.
+▒o ▒▒e ▒o▒▒▒ is a ki▒c▒e▒. ▒o ▒▒e wes▒ is a ▒a▒▒▒oom. 
+
+You ca▒ see: a ▒ai▒ o▒ g▒asses, a co▒▒ee mug
+What now? get glasses then wear glasses
+
+g▒asses is ▒u▒ i▒ i▒▒e▒▒o▒y
+Wow!
+
+You are in your bedroom.
+To the north is a kitchen. To the west is a bathroom. 
+
+You can see: a coffee mug
+What now? get mug
+
+mug is put in inventory
+
+You are in your bedroom.
+To the north is a kitchen. To the west is a bathroom. 
+What now? go west
+
+Moved
+
+You are in the bathroom.
+To the east is your bedroom. 
+
+You can see: a toothbrush, toothpaste
+What now? get toothbrush and get toothpaste
+
+toothbrush is put in inventory
+toothpaste is put in inventory
+
+You are in the bathroom.
+To the east is your bedroom. 
+What now? apply toothpaste
+
+Toothpaste applied to brush
+
+You are in the bathroom.
+To the east is your bedroom. 
+What now? brush teeth
+
+Your teeth are shining
+
+You are in the bathroom.
+To the east is your bedroom. 
+What now? go east
+
+Moved
+
+You are in your bedroom.
+To the north is a kitchen. To the west is a bathroom. 
+What now? go north
+
+Moved
+
+You are in the kitchen.
+To the south is your bedroom. To the west is a hallway. 
+
+You can see: a pot of coffee
+What now? get coffee then pour coffee
+
+coffee is put in inventory
+Coffee Poured
+
+You are in the kitchen.
+To the south is your bedroom. To the west is a hallway. 
+What now? drink coffee
+
+You feel energized
+
+You are in the kitchen.
+To the south is your bedroom. To the west is a hallway. 
+What now? go west
+
+Moved
+
+You are in the hallway. The front door is closed. 
+To the east is a kitchen. To the south is a lounge. 
+What now? go south
+
+Moved
+
+You are in the lounge.
+To the north is a hallway. 
+
+You can see: a key
+What now? get key
+
+key is put in inventory
+
+You are in the lounge.
+To the north is a hallway. 
+What now? go north
+
+Moved
+
+You are in the hallway. The front door is closed. 
+To the east is a kitchen. To the south is a lounge. 
+What now? unlock door then open door
+
+Unlocked the door
+Opened the door
+
+You are in the hallway. The front door is open. 
+To the east is a kitchen. To the south is a lounge. You can go outside. 
+What now? go outside
+
+Moved
+
+You are standing on the porch. The door is closed.
+You can go back inside.
+What now? wear mask
+
+Mask worn
+
+You are standing on the porch. The door is closed.
+You can go back inside.
+What now? open door
+
+Opened the porch door
+
+You are standing on the porch and wearing your mask.
+You can go back inside. You can go out into the street. 
+What now? go outside
+
+Moved
+
+Congratulations, you have made it outside.
+```
+
 
 
 ## Evaluation & Known Bugs
 * The `save` and `load` commands bypass the parser and are handled directly in the main game loop. This is a good thing as it means that the `process` function doesn't need to worry about IO, but adds a bit of complication since commands are handled in more than one place and the game loop has some more layers. With more time, this could be restructured.
-
-## Conclusion
-
