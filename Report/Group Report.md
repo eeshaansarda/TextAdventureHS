@@ -546,3 +546,14 @@ What now?
 
 ## Evaluation & Known Bugs
 * The `save` and `load` commands bypass the parser and are handled directly in the main game loop. This is a good thing as it means that the `process` function doesn't need to worry about IO, but adds a bit of complication since commands are handled in more than one place and the game loop has some more layers. With more time, this could be restructured.
+* With more time, the `save` and `load` functions would benefit from improved error handling. At the moment, issues with file IO generally result in the program crashing, which is a poor user experience.
+* The program follows the specified structure, with extra files to support input parsing.
+* Haskell language features are used throughout, including list comprehensions and `filter` instead of recursive definitions or a more procedural code style.
+* The game runs correctly and the commands are sensible.
+* The program comes with an accurate `cabal` file to allow for dependencies to be installed and loaded easily. The program is well-documented, with Haddock, a README, and a CHEAT file.
+* The program fully meets the specification, including all easy, medium, and hard additional requirements.
+
+## Conclusion
+
+The game meets the project specification fully, including implementation of all additional requirements up to Hard. It is well documented, so a player can get started quickly, and is written using idiomatic Haskell. With more time, the program could be improved through better error handling.
+
