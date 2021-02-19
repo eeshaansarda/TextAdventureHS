@@ -30,10 +30,15 @@ command = do com <- identifier
              case a of
                Just x -> return (x)
                Nothing -> failure
+          ||| do com <- char '?'
+                 let a = getCommand [com]
+                 case a of
+                   Just x -> return (x)
+                   Nothing -> failure
 
 -- ? does not get parsed by identifier
 getCommand :: String -> Maybe Command'
-getCommand "help"         = Just Help
+getCommand "?"         = Just Help
 getCommand "inventory" = Just Inventory
 getCommand "quit"      = Just Quit
 getCommand _           = Nothing
@@ -121,6 +126,7 @@ object = do obj <- identifier
 
 getObject :: String -> Maybe Object
 getObject "mug" = Just mug
+getObject "fullmug" = Just fullmug
 getObject "coffee" = Just coffeepot
 getObject "key" = Just key
 getObject "mask" = Just mask
@@ -149,6 +155,3 @@ commands :: Command' -> GameData -> (GameData, String)
 commands Inventory state = inv state
 commands Help      state = help state
 commands Quit      state = quit state
-
---getSave::Action' -> GameData -> (GameData, String)
---actions (Save str)      state = save str state

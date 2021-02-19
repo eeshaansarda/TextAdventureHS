@@ -4,30 +4,22 @@ import qualified Data.ByteString.Lazy as B
 import Data.Aeson
 import World
 import DataDecl
---import Test.QuickCheck
 
 {- | Given a direction and a room to move from, return the room id in
    that direction, if it exists.
-e.g. try these at the ghci prompt
-*Main> move "north" bedroom
-Just "kitchen"
-*Main> move "north" kitchen
-Nothing
 -}
 move       :: Direction' -> Room -> Maybe String
-move dir rm = if length exit > 0 then -- exits exist
+move dir rm | length exit > 0 = Just (room (head exit))
+                      -- exits exist
                       -- `head exit` will be the first (and only) exit in the direction.
                       -- `head` is safe here since to run this code, `length exit > 0`
-                     Just (room (head exit))
-                 else
-                     Nothing
+            | otherwise       = Nothing
                where exit = filter (\candidate -> exit_dir candidate == dir) (exits rm)
 
 
 {- | Return True if the object appears in the room. -}
 objectHere     :: DataDecl.Object -> Room -> Bool
 objectHere o rm = elem o (objects rm)
-              -- Return True if object `o` is a member of the list of names of objects in room `rm`
 
 
 {- | Given an object id and a room description, return a new room description
@@ -43,8 +35,10 @@ removeObject o rm = Room (room_desc rm)
 addObject     :: DataDecl.Object -> Room -> Room
 addObject o rm = rm { objects = o : objects rm }
 
--- TODO: never used
--- TODO: findObj can return Maybe Obj
+{-
+
+They are not useful when using data
+
 -- Or just use a function that returns boolean to check first
 {- | Given an object id and a list of objects, return the object data. Note
      that you can assume the object is in the list (i.e. that you have
@@ -54,19 +48,17 @@ findObj o ds = head (filter (\x -> obj_name x == o) ds) -- used head as the list
 --               where search id obj | obj_name obj == id  = True
 --                                   | otherwise           = False
 
--- TODO: never used
--- TODO: Uses string
 {- | Use 'findObj' to find an object in a room description -}
 objectData     :: String -> Room -> DataDecl.Object
 objectData o rm = findObj o (objects rm)
+-}
 
--- TODO: Can use string here?
 {- | Given a game state and a room id, replace the old room information with
      new data. If the room id does not already exist, add it. -}
 updateRoom               :: GameData -> String -> Room -> GameData
 updateRoom gd rmid rmdata = gd {
-                                 world = (rmid, rmdata) : filter (\(x,_) -> not (x == rmid)) (world gd)
-                               }
+  world = (rmid, rmdata) : filter (\(x,_) -> not (x == rmid)) (world gd)
+  }
 
 {- | Given a game state and an object id, find the object in the current
      room and add it to the player's inventory -}
@@ -123,7 +115,6 @@ put obj state
   where curr_location = location_id state
         this_room     = getRoomData state
         response      = (obj_name obj) ++ " has been dropped"
-        -- TODO: find object maybe allow to return Maybe Object
 
 
 {- |
@@ -133,7 +124,7 @@ put obj state
 examine :: ActionObj
 examine obj state | carrying state obj        = (state, obj_desc obj)
                   | objectHere obj this_room  = (state, obj_desc obj)
-                  | otherwise                 = (state, "")
+                  | otherwise                 = (state, "This object is not here.")
                   where this_room = getRoomData state
 
 {- |
@@ -149,10 +140,8 @@ pour obj state
            poured = True
          },
         "Coffee Poured")
-  | obj == coffeepot
-     = (state, "Get mug and coffee")
-  | otherwise
-     = (state, "Can't pour coffee")
+  | obj == coffeepot = (state, "Get mug and coffee")
+  | otherwise        = (state, "Can't pour coffee")
 
 {- |
    Drink the coffee. This only works if the player has a full coffee 
@@ -169,12 +158,9 @@ drink obj state
             poured = False
          },
          "You feel energized")
-  | hasBrushed == False
-      = (state, "Brush your teeth before you drink coffee")
-  | wearingmask
-      = (state, "Remove your mask to drink")
-  | otherwise
-      = (state, "You need a full coffee mug for that")
+  | hasBrushed == False = (state, "Brush your teeth before you drink coffee")
+  | wearingmask         = (state, "Remove your mask to drink")
+  | otherwise           = (state, "You need a full coffee mug for that")
     where
       isFull      = poured state
       wearingmask = masked state

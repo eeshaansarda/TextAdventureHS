@@ -127,16 +127,13 @@ prop_objHere2 item room | (objectHere item room) && (elem item (objects room))  
                         | (not (objectHere item room)) && (not (elem item (objects room))) = True -- does not contain
                         | otherwise                                                       = False
 ---------------------------------------------------------------------------------
---changed
 prop_RemoveObj :: DataDecl.Object -> Room -> Bool
 prop_RemoveObj item room | objectHere item room = not (elem item (objects (removeObject item room)))
                          | otherwise            = True
---prop_RemoveObj item room = (elem item (objects room)) == elem item (objects (removeObject item room))
 
 prop_RemoveObjExit :: DataDecl.Object -> Room -> Bool
 prop_RemoveObjExit item room = length (exits room) == length (exits (removeObject item room))
 -------------------------------------------------------------------------------------
---changed
 prop_AddObj :: DataDecl.Object -> Room -> Bool
 prop_AddObj item room | not (objectHere item room) = (not (elem item (objects room))) == elem item (objects (addObject item room))
                       | otherwise                  = True
@@ -148,9 +145,9 @@ prop_AddObjExit :: DataDecl.Object -> Room -> Bool
 prop_AddObjExit item room = length (exits room) == length (exits (addObject item room))
 ----------------------------------------------------------------------------------
 
-prop_findObj         :: String -> [DataDecl.Object] -> Bool
-prop_findObj obj objs | elem obj [x | y <- objs, x <- [obj_name y]] = obj_name (findObj obj objs) == obj
-                      | otherwise                                   = True
+-- prop_findObj         :: String -> [DataDecl.Object] -> Bool
+-- prop_findObj obj objs | elem obj [x | y <- objs, x <- [obj_name y]] = obj_name (findObj obj objs) == obj
+                      -- | otherwise                                   = True
                           
 ----------------------------------------------------------------------------
 prop_move :: Direction' -> Room -> Bool
