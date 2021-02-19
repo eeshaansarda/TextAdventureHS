@@ -76,7 +76,7 @@ loop state  = do putStrLnFuzzy state (show state)
                               
 --https://www.reddit.com/r/haskell/comments/3wjddo/can_someone_help_me_with_aeson/
 load :: String-> GameData-> InputT IO()
-load path state = do lState <- liftIO (decode <$> B.readFile path)
+load path state = do lState <- liftIO (decode <$> B.readFile ("saved/" ++ path))
                      case lState :: Maybe GameData of
                           Nothing     -> do outputStrLn "Load failed"
                                             loop state
@@ -84,7 +84,7 @@ load path state = do lState <- liftIO (decode <$> B.readFile path)
 
 
 save :: String -> GameData -> InputT IO()
-save path state = do json <- liftIO (B.writeFile path (encode state))
+save path state = do json <- liftIO (B.writeFile ("saved/" ++ path) (encode state))
                      outputStrLn "Saved!"
                      
 {-
@@ -95,6 +95,23 @@ save path state = do json <- liftIO (B.writeFile path (encode state))
 -}
 
 
+instance Arbitrary DataDecl.Object where
+       arbitrary = oneof [return mug, return coffeepot,
+                          return key, return mask,
+                          return glasses, return toothbrush,
+                          return toothpaste]
+
+instance Arbitrary DataDecl.Room where
+       arbitrary = oneof [return bedroom, return kitchen,
+                          return hall, return lounge,
+                          return porch, return street,
+                          return bathroom]
+
+instance Arbitrary DataDecl.Direction' where
+       arbitrary = oneof[return North, return South,
+                         return East, return West,
+                         return Outside, return Inside]
+
 
 
 -----------------------------------------------------------------------------
@@ -102,47 +119,45 @@ prop_fuzz  :: Char -> Bool
 prop_fuzz x = (x == x) || (x == '▒')
               where fuzzed = fuzz x
 -----------------------------------------------------------------------------
-prop_objHere1 :: DataDecl.Object ->Room-> Bool
+prop_objHere1 :: DataDecl.Object -> Room -> Bool
 prop_objHere1 item room = (objectHere item room) == True || (objectHere item room) == False
 
-prop_objHere2 :: DataDecl.Object ->Room-> Bool
+prop_objHere2 :: DataDecl.Object -> Room -> Bool
 prop_objHere2 item room | (objectHere item room) && (elem item (objects room))            = True
                         | (not (objectHere item room)) && (not (elem item (objects room))) = True -- does not contain
                         | otherwise                                                       = False
 ---------------------------------------------------------------------------------
-prop_RemoveObj :: DataDecl.Object -> Room-> Bool
-prop_RemoveObj item room =  (elem item (objects room)) == elem item (objects (removeObject item room))
+--changed
+prop_RemoveObj :: DataDecl.Object -> Room -> Bool
+prop_RemoveObj item room | objectHere item room = not (elem item (objects (removeObject item room)))
+                         | otherwise            = True
+--prop_RemoveObj item room = (elem item (objects room)) == elem item (objects (removeObject item room))
 
-prop_RemoveObjDesc :: DataDecl.Object -> Room-> Bool
-prop_RemoveObjDesc item room = room_desc room == room_desc (removeObject item room)
-
-prop_RemoveObjExit :: DataDecl.Object -> Room-> Bool
+prop_RemoveObjExit :: DataDecl.Object -> Room -> Bool
 prop_RemoveObjExit item room = length (exits room) == length (exits (removeObject item room))
 -------------------------------------------------------------------------------------
-prop_AddObj :: DataDecl.Object -> Room-> Bool
-prop_AddObj item room = (not (elem item (objects room))) == elem item (objects (addObject item room))
+--changed
+prop_AddObj :: DataDecl.Object -> Room -> Bool
+prop_AddObj item room | not (objectHere item room) = (not (elem item (objects room))) == elem item (objects (addObject item room))
+                      | otherwise                  = True
 
-prop_AddObjDesc :: DataDecl.Object -> Room-> Bool
+prop_AddObjDesc :: DataDecl.Object -> Room -> Bool
 prop_AddObjDesc item room = room_desc room == room_desc (addObject item room)
 
-prop_AddObjExit :: DataDecl.Object -> Room-> Bool
+prop_AddObjExit :: DataDecl.Object -> Room -> Bool
 prop_AddObjExit item room = length (exits room) == length (exits (addObject item room))
 ----------------------------------------------------------------------------------
 
-instance Arbitrary DataDecl.Object where
-       arbitrary = oneof[return mug,return coffeepot,return key,return mask,return glasses,return toothbrush,return toothpaste]
-
-instance Arbitrary DataDecl.Room where
-       arbitrary = oneof[return bedroom,return kitchen,return hall,return lounge,return porch,return street,return bathroom]
-
-instance Arbitrary DataDecl.Direction' where
-       arbitrary = oneof[return North,return South,return East,return West,return Outside,return Inside]
-                                   
-                                   
 prop_findObj         :: String -> [DataDecl.Object] -> Bool
 prop_findObj obj objs | elem obj [x | y <- objs, x <- [obj_name y]] = obj_name (findObj obj objs) == obj
                       | otherwise                                   = True
                           
+----------------------------------------------------------------------------
+prop_move :: Direction' -> Room -> Bool
+prop_move dir room | elem dir [x | y <- (exits room), x <- [exit_dir y]] = case move dir room of
+                                                                                Just a -> True
+                                                                                _      -> False
+                   | otherwise                                           = move dir room == Nothing
 ----------------------------------------------------------------------------
 {-
 *************The following Tests have been commented out as QuickTests were not deemed apt for them

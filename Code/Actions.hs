@@ -26,7 +26,7 @@ move dir rm = if length exit > 0 then -- exits exist
 
 {- | Return True if the object appears in the room. -}
 objectHere     :: DataDecl.Object -> Room -> Bool
-objectHere o rm = elem o [x | x <- objects rm]
+objectHere o rm = elem o (objects rm)
               -- Return True if object `o` is a member of the list of names of objects in room `rm`
 
 
@@ -41,17 +41,20 @@ removeObject o rm = Room (room_desc rm)
 {- | Given an object and a room description, return a new room description
      with that object added -}
 addObject     :: DataDecl.Object -> Room -> Room
-addObject o rm = rm{ objects = o : objects rm }
+addObject o rm = rm { objects = o : objects rm }
 
--- TODO: Uses string
+-- TODO: never used
+-- TODO: findObj can return Maybe Obj
+-- Or just use a function that returns boolean to check first
 {- | Given an object id and a list of objects, return the object data. Note
      that you can assume the object is in the list (i.e. that you have
      checked with 'objectHere') -}
 findObj     :: String -> [DataDecl.Object] -> DataDecl.Object
-findObj o ds = head (filter (search o) ds) -- used head as the list will never be empty
-               where search id obj | obj_name obj == id  = True
-                                   | otherwise           = False
+findObj o ds = head (filter (\x -> obj_name x == o) ds) -- used head as the list will never be empty
+--               where search id obj | obj_name obj == id  = True
+--                                   | otherwise           = False
 
+-- TODO: never used
 -- TODO: Uses string
 {- | Use 'findObj' to find an object in a room description -}
 objectData     :: String -> Room -> DataDecl.Object
@@ -68,7 +71,7 @@ updateRoom gd rmid rmdata = gd {
 {- | Given a game state and an object id, find the object in the current
      room and add it to the player's inventory -}
 addInv       :: GameData -> DataDecl.Object -> GameData
-addInv gd obj = gd{inventory = obj : inventory gd}
+addInv gd obj = gd {inventory = obj : inventory gd}
 
 {- | Given a game state and an object id, remove the object from the
      inventory. -}
@@ -123,8 +126,6 @@ put obj state
         -- TODO: find object maybe allow to return Maybe Object
 
 
--- TODO: findObj can return Maybe Obj
--- Or just use a function that returns boolean to check first
 {- |
    Don't update the state, just return a message giving the full description
    of the object. As long as it's either in the room or the player's 
@@ -135,7 +136,6 @@ examine obj state | carrying state obj        = (state, obj_desc obj)
                   | otherwise                 = (state, "")
                   where this_room = getRoomData state
 
---TODO thought not to use object here
 {- |
    Pour the coffee. This should only work if the player is carrying
    both the pot and the mug. This should update the status of the "mug"
@@ -246,7 +246,10 @@ brush :: Action
 brush str state | pasteApplied' && gotBrush && str == "teeth" = 
                     -- Got a brush with toothpaste and trying to brush teeth - OK!
                     (state {brushed = True, pasteApplied = False}, "Your teeth are shining")
-                | gotBrush && gotPaste = 
+                | pasteApplied' && gotBrush =
+                    -- Trying to brush something that is not teeth
+                    (state, "Is that really what you want to brush? I didn't think so.")
+                | gotBrush && gotPaste =
                     -- Got brush and paste, but not applied paste yet
                     (state, "Please apply \"toothpaste\" to the brush")
                 | otherwise = 
